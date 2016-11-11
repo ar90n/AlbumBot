@@ -5,10 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test",
-    "setup-db"        : "node ./scripts/setup_db.js",
-    "setup-s3"        : "node ./scripts/setup_s3.js $npm_package_config_bucket_name",
-    "deploy-frontend" : "node ./scripts/deploy_frontend.js $npm_package_config_bucket_name",
-    "deploy-backend"  : "node ./scripts/deploy_backend.js"
+    "deploy": "sls client deploy && sls deploy",
+    "deploy-frontend": "sls client deploy",
+    "deploy-backend": "sls deploy"
   },
   "author": "Masahiro Wada<argon.argon.argon@gmail.com>",
   "license": "MIT",
@@ -21,7 +20,6 @@
     "locutus": "^2.0.5"
   },
   "devDependencies": {
-    "shelljs": "^0.7.4",
     "chai": "^3.5.0",
     "mocha": "^3.1.2",
     "node-inspector": "^0.12.8",
@@ -36,8 +34,5 @@
     "plugins": [
       "import"
     ]
-  },
-  "config": {
-    "bucket_name": "album-bot-bucket"
   }
 }
