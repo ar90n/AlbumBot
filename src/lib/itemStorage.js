@@ -1,14 +1,10 @@
 const db = require('./dynamodb').db;
-
 require('dotenv').config();
+
 const isOffline = () => !!process.env.IS_OFFLINE;
 
 const TABLE_PREFIX = isOffline() ? '' : process.env.REMOTE_STAGE;
 const TABLE_NAME = `${TABLE_PREFIX}items`;
-
-function get(userId, createdAt) {
-  return getByRange(userId, createdAt, createdAt);
-}
 
 function getByRange(userId, beginCreatedAt, endCreatedAt) {
   let keyConditionExpression = '#userId = :userId';
@@ -29,6 +25,10 @@ function getByRange(userId, beginCreatedAt, endCreatedAt) {
       '#createdAt': 'createdAt',
     },
   });
+}
+
+function get(userId, createdAt) {
+  return getByRange(userId, createdAt, createdAt);
 }
 
 function getAll() {
@@ -58,8 +58,8 @@ function clear() {
 }
 
 module.exports = {
-  get,
   getByRange,
+  get,
   getAll,
   put,
   clear,

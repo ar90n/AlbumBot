@@ -1,8 +1,8 @@
 const Promise = require('bluebird');
 const s3 = require('./s3').s3;
 const getObjectUrl = require('./s3').getObjectUrl;
-
 require('dotenv').config();
+
 const isOffline = () => !!process.env.IS_OFFLINE;
 
 const BUCKET_PREFIX = isOffline() ? 'dev' : process.env.REMOTE_STAGE;
@@ -15,7 +15,7 @@ function put({ key, body }) {
     Body: body,
   };
 
-  return s3('putObject', content).then((response) => {
+  return s3('putObject', content).then(() => {
     const url = getObjectUrl(content);
     return Promise.resolve({
       objectUrl: url,

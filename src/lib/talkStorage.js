@@ -1,6 +1,6 @@
 const db = require('./dynamodb').db;
-
 require('dotenv').config();
+
 const isOffline = () => !!process.env.IS_OFFLINE;
 
 const TABLE_PREFIX = isOffline() ? '' : process.env.REMOTE_STAGE;

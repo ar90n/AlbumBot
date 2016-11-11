@@ -10,6 +10,7 @@ const itemStorage = require('../src/lib/itemStorage.js');
 const talkStorage = require('../src/lib/talkStorage.js');
 const objectStorage = require('../src/lib/objectStorage.js');
 const mochaPlugin = require('serverless-mocha-plugin');
+const nock = require('nock');
 const lambdaWrapper = mochaPlugin.lambdaWrapper;
 const expect = mochaPlugin.chai.expect;
 
@@ -33,6 +34,12 @@ describe('webhook', () => {
   beforeEach((done) => {
     itemStorage.clear().then(() => {
       talkStorage.clear().then(() => {
+        nock('https://api.line.me')
+          .post('/v2/bot/message/reply')
+          .reply(200, {});
+        nock('https://api.line.me')
+          .get(/\/v2\/bot\/message\/[0-9]+\/content/)
+          .reply(200, new Buffer('blob'));
         done();
       });
     });

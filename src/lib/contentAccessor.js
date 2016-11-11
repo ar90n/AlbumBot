@@ -2,41 +2,25 @@ const LINEBot = require('line-messaging');
 const objects = require('./objectStorage');
 
 require('dotenv').config();
-const isOffline = () => !!process.env.IS_OFFLINE;
 
 function fetchText(message) {
   return Promise.resolve({ text: message.getText() });
 }
 
-function fetchBlob(message) {
+function fetchBlob(bot, message) {
   const messageId = message.getMessageId();
-  if (!isOffline()) {
-    return bot.getMessageContent(messageId).then((data) => {
-      const param = { key: messageId, body: data };
-      return objects.put(param);
-    });
-  } else {
-    const param = { key: messageId, body: 'data' };
-    return objects.put(param);
-  }
+  return bot.getMessageContent(messageId).then(data =>
+     objects.put({ key: messageId, body: data })
+  );
 }
 
-function fetchLocation(message) {
-  return Promise.resolve({
-    title: message.getTitle(),
-    address: message.getAddress(),
-    latitude: message.getLatitude(),
-    longitude: message.getLongiture(),
-  });
-}
-
-function fetch(message) {
+function fetch(bot, message) {
   if (message.isMessageType(LINEBot.Message.TEXT)) {
     return fetchText(message);
   } else if (message.isMessageType(LINEBot.Message.IMAGE)) {
-    return fetchBlob(message);
+    return fetchBlob(bot, message);
   } else if (message.isMessageType(LINEBot.Message.VIDEO)) {
-    return fetchBlob(message);
+    return fetchBlob(bot, message);
   }
 
   return new Promise((resolve, reject) => {

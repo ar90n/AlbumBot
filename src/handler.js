@@ -9,8 +9,8 @@ module.exports.webhook = (event, context, callback) => {
     channelSecret: process.env.CHANNEL_SECRET,
     channelToken: process.env.CHANNEL_ACCESS_TOKEN,
   });
-  bot.on(LINEBot.Events.MESSAGE, botHandlers.onMessage.bind(this, callback));
-  bot.on(LINEBot.Events.FOLLOW, botHandlers.onFollow.bind(this, callback));
+  bot.on(LINEBot.Events.MESSAGE, botHandlers.onMessage.bind(bot, callback));
+  bot.on(LINEBot.Events.FOLLOW, botHandlers.onFollow.bind(bot, callback));
 
   const body = event.body;
   const signature = event.headers['X-Line-Signature'];
