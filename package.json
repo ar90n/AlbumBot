@@ -4,13 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
-    "preinstall"      : "cd web && npm install",
-    "postinstall"     : "cd serverless && npm install",
+    "test": "mocha test",
     "setup-db"        : "node ./scripts/setup_db.js",
     "setup-s3"        : "node ./scripts/setup_s3.js $npm_package_config_bucket_name",
     "deploy-frontend" : "node ./scripts/deploy_frontend.js $npm_package_config_bucket_name",
-    "deploy-backend"  : "node ./scripts/deploy_backend.js",
+    "deploy-backend"  : "node ./scripts/deploy_backend.js"
   },
   "author": "Masahiro Wada<argon.argon.argon@gmail.com>",
   "license": "MIT",
