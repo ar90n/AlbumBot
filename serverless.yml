@@ -1,0 +1,60 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: album-bot
+
+package:
+  exclude:
+    - node_modules/dynamodb-localhost/**
+    - node_modules/serverless-dynamodb-local/**
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  region: us-east-1
+  stage: dev
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource:
+        - "arn:aws:dynamodb:us-east-1:*"
+
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+  - serverless-plugin-write-env-vars
+  - serverless-client-s3
+  - serverless-mocha-plugin
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  dynamodb:
+    start:
+      port: 8000
+      migration: true
+    migration:
+      dir: resources/migrations
+  client:
+    bucketName: ${self:custom.stage}-bucket-for-album-bot
+  writeEnvVars:
+    REMOTE_STAGE: ${self:custom.stage}
+
+functions:
+  webhook:
+    handler: src/handler.webhook
+    events:
+      - http:
+          method: POST
+          path: webhook
+          integration: lambda

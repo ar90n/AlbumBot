@@ -1,0 +1,29 @@
+{
+  "Table": {
+    "TableName": "items",
+    "KeySchema": [
+      {
+        "AttributeName": "userId",
+        "KeyType": "HASH"
+      },
+      {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+      }
+    ],
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "userId",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "createdAt",
+        "AttributeType": "N"
+      }
+    ],
+    "ProvisionedThroughput": {
+      "ReadCapacityUnits": 1,
+      "WriteCapacityUnits": 1
+    }
+  }
+}

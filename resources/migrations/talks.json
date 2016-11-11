@@ -1,0 +1,21 @@
+{
+  "Table": {
+    "TableName": "talks",
+    "KeySchema": [
+      {
+        "AttributeName": "talkId",
+        "KeyType": "HASH"
+      }
+    ],
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "talkId",
+        "AttributeType": "S"
+      }
+    ],
+    "ProvisionedThroughput": {
+      "ReadCapacityUnits": 1,
+      "WriteCapacityUnits": 1
+    }
+  }
+}
