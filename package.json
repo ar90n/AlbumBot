@@ -28,7 +28,8 @@
     "serverless-dynamodb-local": "0.2.17",
     "serverless-mocha-plugin": "^1.0.3",
     "serverless-offline": "git+https://github.com/dherault/serverless-offline.git",
-    "serverless-plugin-write-env-vars": "1.0.1"
+    "serverless-plugin-write-env-vars": "1.0.1",
+    "serverless-s3-local": "^0.1.0"
   },
   "eslintConfig": {
     "extends": "airbnb",

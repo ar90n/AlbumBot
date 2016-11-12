@@ -33,6 +33,7 @@ provider:
 plugins:
   - serverless-offline
   - serverless-dynamodb-local
+  - serverless-s3-local
   - serverless-plugin-write-env-vars
   - serverless-client-s3
   - serverless-mocha-plugin
@@ -45,6 +46,11 @@ custom:
       migration: true
     migration:
       dir: resources/migrations
+  s3:
+    port: 8001
+    buckets:
+      - ${self:custom.stage}-bucket-for-album-bot
+    directory: /tmp
   client:
     bucketName: ${self:custom.stage}-bucket-for-album-bot
   writeEnvVars:
