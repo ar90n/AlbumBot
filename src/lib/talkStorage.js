@@ -6,7 +6,7 @@ const isOffline = () => !!process.env.IS_OFFLINE;
 const TABLE_PREFIX = isOffline() ? '' : process.env.REMOTE_STAGE;
 const TABLE_NAME = `${TABLE_PREFIX}talks`;
 
-function generateId(userId) {
+function generateId(sourceId) {
   return 'aaaaa';
 }
 

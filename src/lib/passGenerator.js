@@ -7,9 +7,9 @@ function generate() {
   return 'abcd';
 }
 
+const hashSalt = 'aaa';
 function hash(passphrase) {
-  const salt = 'aaa';
-  return crypto.createHmac('sha256', salt).update(passphrase).digest('base64');
+  return crypto.createHmac('sha256', hashSalt).update(passphrase).digest('base64');
 }
 
 module.exports = {

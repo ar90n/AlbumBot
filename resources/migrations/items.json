@@ -3,7 +3,7 @@
     "TableName": "items",
     "KeySchema": [
       {
-        "AttributeName": "userId",
+        "AttributeName": "sourceId",
         "KeyType": "HASH"
       },
       {
@@ -13,7 +13,7 @@
     ],
     "AttributeDefinitions": [
       {
-        "AttributeName": "userId",
+        "AttributeName": "sourceId",
         "AttributeType": "S"
       },
       {

@@ -6,8 +6,8 @@ const isOffline = () => !!process.env.IS_OFFLINE;
 const TABLE_PREFIX = isOffline() ? '' : process.env.REMOTE_STAGE;
 const TABLE_NAME = `${TABLE_PREFIX}items`;
 
-function getByRange(userId, beginCreatedAt, endCreatedAt) {
-  let keyConditionExpression = '#userId = :userId';
+function getByRange(sourceId, beginCreatedAt, endCreatedAt) {
+  let keyConditionExpression = '#sourceId = :sourceId';
   if (!!beginCreatedAt && !!endCreatedAt) {
     keyConditionExpression += ' AND #createdAt BETWEEN :beginCreatedAt AND :endCreatedAt';
   }
@@ -16,19 +16,19 @@ function getByRange(userId, beginCreatedAt, endCreatedAt) {
     TableName: TABLE_NAME,
     KeyConditionExpression: keyConditionExpression,
     ExpressionAttributeValues: {
-      ':userId': userId,
+      ':sourceId': sourceId,
       ':beginCreatedAt': beginCreatedAt,
       ':endCreatedAt': endCreatedAt,
     },
     ExpressionAttributeNames: {
-      '#userId': 'userId',
+      '#sourceId': 'sourceId',
       '#createdAt': 'createdAt',
     },
   });
 }
 
-function get(userId, createdAt) {
-  return getByRange(userId, createdAt, createdAt);
+function get(sourceId, createdAt) {
+  return getByRange(sourceId, createdAt, createdAt);
 }
 
 function getAll() {
@@ -48,10 +48,10 @@ function clear() {
   return db('scan', {
     TableName: TABLE_NAME,
   }).then(({ Items }) =>
-       Promise.all(Items.map(({ userId, createdAt }) =>
+       Promise.all(Items.map(({ sourceId, createdAt }) =>
          db('delete', {
            TableName: TABLE_NAME,
-           Key: { userId, createdAt },
+           Key: { sourceId, createdAt },
          })
       ))
   );

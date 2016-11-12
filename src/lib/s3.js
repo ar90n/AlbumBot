@@ -3,7 +3,6 @@ const AWS = require('aws-sdk');
 
 const isOffline = () => !!process.env.IS_OFFLINE;
 
-
 const s3OfflineOptions = {
   s3ForcePathStyle: true,
   region: 'localhost',

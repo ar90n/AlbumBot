@@ -47,7 +47,7 @@ describe('webhook', () => {
 
   const channelSecret = process.env.CHANNEL_SECRET;
   it('add text message item into db when text message is received', (done) => {
-    const userId = 'U206d25c2ea6bd87c17655609a1c37cb8';
+    const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479859;
     const message = {
       id: '325708',
@@ -62,7 +62,7 @@ describe('webhook', () => {
         timestamp: createdAt,
         source: {
           type: 'user',
-          userId,
+          userId: sourceId,
         },
         message,
       }],
@@ -76,12 +76,12 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStorage.get(userId, createdAt).then((res) => {
+      itemStorage.get(sourceId, createdAt).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
         const item = res.Items[0];
-        expect(item).to.deep.equal(Object.assign({}, message, { userId, createdAt }));
+        expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt }));
 
         done();
       });
@@ -89,7 +89,7 @@ describe('webhook', () => {
   });
 
   it('add image message item into db when image message is received', (done) => {
-    const userId = 'U206d25c2ea6bd87c17655609a1c37cb8';
+    const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479860;
     const message = {
       id: '325709',
@@ -103,7 +103,7 @@ describe('webhook', () => {
         timestamp: createdAt,
         source: {
           type: 'user',
-          userId,
+          userId: sourceId,
         },
         message,
       }],
@@ -117,7 +117,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStorage.get(userId, createdAt).then((res) => {
+      itemStorage.get(sourceId, createdAt).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
@@ -125,7 +125,7 @@ describe('webhook', () => {
         const bucket = objectStorage.BUCKET_NAME;
         const key = message.id;
         const objectUrl = `https://${bucket}/${key}`;
-        expect(item).to.deep.equal(Object.assign({}, message, { userId, createdAt, objectUrl }));
+        expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt, objectUrl }));
 
         done();
       });
@@ -133,7 +133,7 @@ describe('webhook', () => {
   });
 
   it('add video message item into db when video message is received', (done) => {
-    const userId = 'U206d25c2ea6bd87c17655609a1c37cb8';
+    const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479861;
     const message = {
       id: '325710',
@@ -147,7 +147,7 @@ describe('webhook', () => {
         timestamp: createdAt,
         source: {
           type: 'user',
-          userId,
+          userId: sourceId,
         },
         message,
       }],
@@ -161,7 +161,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStorage.get(userId, createdAt).then((res) => {
+      itemStorage.get(sourceId, createdAt).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
@@ -169,7 +169,7 @@ describe('webhook', () => {
         const bucket = objectStorage.BUCKET_NAME;
         const key = message.id;
         const objectUrl = `https://${bucket}/${key}`;
-        expect(item).to.deep.equal(Object.assign({}, message, { userId, createdAt, objectUrl }));
+        expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt, objectUrl }));
 
         done();
       });
@@ -177,7 +177,7 @@ describe('webhook', () => {
   });
 
   it('ignore audio message', (done) => {
-    const userId = 'U206d25c2ea6bd87c17655609a1c37cb8';
+    const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479861;
     const message = {
       id: '325710',
@@ -191,7 +191,7 @@ describe('webhook', () => {
         timestamp: createdAt,
         source: {
           type: 'user',
-          userId,
+          userId: sourceId,
         },
         message,
       }],
@@ -212,7 +212,7 @@ describe('webhook', () => {
   });
 
   it('ignore location message', (done) => {
-    const userId = 'U206d25c2ea6bd87c17655609a1c37cb8';
+    const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479861;
     const message = {
       id: '325710',
@@ -226,7 +226,7 @@ describe('webhook', () => {
         timestamp: createdAt,
         source: {
           type: 'user',
-          userId,
+          userId: sourceId,
         },
         message,
       }],
@@ -294,11 +294,11 @@ describe('webhook', () => {
           expect(count).to.equal(2);
 
           const item0 = res.Items[0];
-          const expectedItem0 = Object.assign({}, events[0].message, { userId: events[0].source.userId, createdAt: events[0].timestamp });
+          const expectedItem0 = Object.assign({}, events[0].message, { sourceId: events[0].source.userId, createdAt: events[0].timestamp });
           expect(item0).to.deep.equal(expectedItem0);
 
           const item1 = res.Items[1];
-          const expectedItem1 = Object.assign({}, events[1].message, { userId: events[1].source.userId, createdAt: events[1].timestamp });
+          const expectedItem1 = Object.assign({}, events[1].message, { sourceId: events[1].source.userId, createdAt: events[1].timestamp });
           expect(item1).to.deep.equal(expectedItem1);
 
           done();
@@ -307,8 +307,92 @@ describe('webhook', () => {
     });
   });
 
+  it('add text message item into db when text message is sent from group', (done) => {
+    const sourceId = 'cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+    const createdAt = 1462629479859;
+    const message = {
+      id: '325708',
+      type: 'text',
+      text: 'Hello, world!!!!!!',
+    };
+
+    const body = {
+      events: [{
+        replyToken: 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',
+        type: 'message',
+        timestamp: createdAt,
+        source: {
+          type: 'group',
+          groupId: sourceId,
+        },
+        message,
+      }],
+    };
+
+    const signature = crypto.createHmac('sha256', channelSecret).update(JSON.stringify(body)).digest('base64');
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Line-Signature': signature,
+    };
+
+    wrapped.run({ body, headers }, (err, response) => {
+      expect(err).to.be.null;
+      itemStorage.get(sourceId, createdAt).then((res) => {
+        const count = res.Count;
+        expect(count).to.equal(1);
+
+        const item = res.Items[0];
+        expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt }));
+
+        done();
+      });
+    });
+  });
+
+  it('add text message item into db when text message is sent from room', (done) => {
+    const sourceId = 'cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+    const createdAt = 1462629479859;
+    const message = {
+      id: '325708',
+      type: 'text',
+      text: 'Hello, world!!!!!!',
+    };
+
+    const body = {
+      events: [{
+        replyToken: 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',
+        type: 'message',
+        timestamp: createdAt,
+        source: {
+          type: 'room',
+          roomId: sourceId,
+        },
+        message,
+      }],
+    };
+
+    const signature = crypto.createHmac('sha256', channelSecret).update(JSON.stringify(body)).digest('base64');
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Line-Signature': signature,
+    };
+
+    wrapped.run({ body, headers }, (err, response) => {
+      expect(err).to.be.null;
+      itemStorage.get(sourceId, createdAt).then((res) => {
+        const count = res.Count;
+        expect(count).to.equal(1);
+
+        const item = res.Items[0];
+        expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt }));
+
+        done();
+      });
+    });
+  });
+
   it('create a talk into db when follow event is received', (done) => {
-    const userId = 'U206d25c2ea6bd87c17655609a1c37cb8';
+    const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479859;
     const events = [{
       replyToken: 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',
@@ -316,7 +400,7 @@ describe('webhook', () => {
       timestamp: createdAt,
       source: {
         type: 'user',
-        userId,
+        userId: sourceId,
       },
     }];
 
@@ -336,12 +420,84 @@ describe('webhook', () => {
         const talk = res.Items[0];
         const expectedTalk = {
           talkId,
-          userId,
+          sourceId,
           passHash,
           createdAt,
         };
         expect(talk).to.deep.equal(expectedTalk);
 
+        done();
+      });
+    });
+  });
+
+  it('reply page url when url command is received', (done) => {
+    const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
+    const createdAt = 1462629479859;
+    const message = {
+      id: '325708',
+      type: 'text',
+      text: '@uRl',
+    };
+
+    const body = {
+      events: [{
+        replyToken: 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',
+        type: 'message',
+        timestamp: createdAt,
+        source: {
+          type: 'user',
+          userId: sourceId,
+        },
+        message,
+      }],
+    };
+
+    const signature = crypto.createHmac('sha256', channelSecret).update(JSON.stringify(body)).digest('base64');
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Line-Signature': signature,
+    };
+
+    wrapped.run({ body, headers }, (err, response) => {
+      expect(err).to.be.null;
+      itemStorage.get(sourceId, createdAt).then((res) => {
+        done();
+      });
+    });
+  });
+
+  it('reply confirm when pass command is received', (done) => {
+    const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
+    const createdAt = 1462629479859;
+    const message = {
+      id: '325708',
+      type: 'text',
+      text: '@Pass aabbccdd',
+    };
+
+    const body = {
+      events: [{
+        replyToken: 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',
+        type: 'message',
+        timestamp: createdAt,
+        source: {
+          type: 'user',
+          userId: sourceId,
+        },
+        message,
+      }],
+    };
+
+    const signature = crypto.createHmac('sha256', channelSecret).update(JSON.stringify(body)).digest('base64');
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Line-Signature': signature,
+    };
+
+    wrapped.run({ body, headers }, (err, response) => {
+      expect(err).to.be.null;
+      itemStorage.get(sourceId, createdAt).then((res) => {
         done();
       });
     });

@@ -11,6 +11,7 @@ module.exports.webhook = (event, context, callback) => {
   });
   bot.on(LINEBot.Events.MESSAGE, botHandlers.onMessage.bind(bot, callback));
   bot.on(LINEBot.Events.FOLLOW, botHandlers.onFollow.bind(bot, callback));
+  bot.on(LINEBot.Events.JOIN, botHandlers.onFollow.bind(bot, callback));
 
   const body = event.body;
   const signature = event.headers['X-Line-Signature'];
