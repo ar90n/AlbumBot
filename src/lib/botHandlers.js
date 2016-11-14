@@ -25,7 +25,7 @@ function replyPageUrl(bot, token, sourceId) {
   const pageUrl = createPageUrl(talkId);
   const replyMessage = pageUrl;
   return bot.replyText(token, replyMessage);
-}'Are you sure?''Are you sure?'
+}
 
 function confirmNewPass(bot, token, newPass) {
   const confirm = new LINEBot.ConfirmTemplateBuilder();
