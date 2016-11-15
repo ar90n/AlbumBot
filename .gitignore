@@ -40,3 +40,4 @@ jspm_packages
 .envrc
 *.json.template
 .serverless
+.webpack
