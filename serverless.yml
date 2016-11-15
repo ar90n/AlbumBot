@@ -18,7 +18,7 @@ resources:
     ItemStore:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: itemStore
+        TableName: ${self:custom.stage}itemStore
         AttributeDefinitions:
           - AttributeName: sourceId
             AttributeType: S
@@ -35,7 +35,7 @@ resources:
     TalkStore:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: talkStore
+        TableName: ${self:custom.stage}talkStore
         AttributeDefinitions:
           - AttributeName: talkId
             AttributeType: S
