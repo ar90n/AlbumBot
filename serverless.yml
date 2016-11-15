@@ -17,6 +17,50 @@ package:
   exclude:
     - node_modules/dynamodb-localhost/**
     - node_modules/serverless-dynamodb-local/**
+    - node_modules/serverless-s3-local/**
+    - node_modules/serverless-offline/**
+    - node_modules/s3rver/**
+    - node_modules/nock/**
+    - node_modules/babel*/**
+    - test/**
+
+resources:
+  Resources:
+    ItemStore:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: itemStore
+        AttributeDefinitions:
+          - AttributeName: sourceId
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: N
+        KeySchema:
+          - AttributeName: sourceId
+            KeyType: HASH
+          - AttributeName: createdAt
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    TalkStore:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: talkStore
+        AttributeDefinitions:
+          - AttributeName: talkId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: talkId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    BlobBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        BucketName: ${self:custom.stage}-bucket-for-album-bot
 
 provider:
   name: aws
@@ -27,14 +71,16 @@ provider:
     - Effect: "Allow"
       Action:
         - "dynamodb:*"
+        - "s3:GetObject"
+        - "s3:PutObject"
       Resource:
         - "arn:aws:dynamodb:us-east-1:*"
+        - "arn:aws:s3::*"
 
 plugins:
   - serverless-offline
   - serverless-dynamodb-local
   - serverless-s3-local
-  - serverless-plugin-write-env-vars
   - serverless-client-s3
   - serverless-mocha-plugin
 
