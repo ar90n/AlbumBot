@@ -1,8 +1,6 @@
 const LINEBot = require('line-messaging');
 const botHandlers = require('./lib/botHandlers');
 
-require('dotenv').config();
-
 module.exports.webhook = (event, context, callback) => {
   const bot = LINEBot.create({
     channelID: process.env.CHANNEL_ID,
