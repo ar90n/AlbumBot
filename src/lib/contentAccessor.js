@@ -1,8 +1,6 @@
 const LINEBot = require('line-messaging');
 const objects = require('./objectStore');
 
-require('dotenv').config();
-
 function fetchText(message) {
   return Promise.resolve({ text: message.getText() });
 }

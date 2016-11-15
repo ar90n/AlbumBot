@@ -4,7 +4,6 @@ const contentAccessor = require('./contentAccessor');
 const passGenerator = require('./passGenerator');
 const Promise = require('bluebird');
 const LINEBot = require('line-messaging');
-require('dotenv').config();
 
 function getSourceId(message) {
   return message.isUserEvent() ? message.getUserId() :

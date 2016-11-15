@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-require('dotenv').config();
 
 const isTest = () => !!process.env.IS_TEST;
 

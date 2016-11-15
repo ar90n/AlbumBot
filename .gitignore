@@ -37,7 +37,9 @@ jspm_packages
 .node_repl_history
 
 .env
+.env.yml
 .envrc
 *.json.template
 .serverless
 .webpack
+.tmp

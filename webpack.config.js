@@ -1,13 +1,9 @@
 const nodeExternals = require('webpack-node-externals');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: './src/handler.js',
   target: 'node',
-  output: {
-    libraryTarget: 'commonjs',
-    path: '.webpack',
-    filename: 'index.js'
-  },
   module: {
     loaders: [
       {
@@ -22,5 +18,8 @@ module.exports = {
       }
     ]
   },
-  externals:[nodeExternals()]
+  externals:[ nodeExternals() ],
+  plugins: [
+    new Dotenv({ path: './.env', safe: false })
+  ]
 }

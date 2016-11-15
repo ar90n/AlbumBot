@@ -1,5 +1,4 @@
 const db = require('./dynamodb').db;
-require('dotenv').config();
 
 const isOffline = () => !!process.env.IS_OFFLINE;
 

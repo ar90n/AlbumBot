@@ -13,17 +13,6 @@
 
 service: album-bot
 
-package:
-  exclude:
-    - node_modules/dynamodb-localhost/**
-    - node_modules/serverless-dynamodb-local/**
-    - node_modules/serverless-s3-local/**
-    - node_modules/s3rver/**
-    - node_modules/nock/**
-    - node_modules/babel*/**
-    - node_modules/aws-sdk/**
-    - test/**
-
 resources:
   Resources:
     ItemStore:
@@ -97,10 +86,11 @@ custom:
     buckets:
       - ${self:custom.stage}-bucket-for-album-bot
     directory: /tmp
-  client:
-    bucketName: ${self:custom.stage}-bucket-for-album-bot
   writeEnvVars:
     REMOTE_STAGE: ${self:custom.stage}
+    CHANNEL_ID: ${file(./.env.yml):CHANNEL_ID}
+    CHANNEL_SECRET: ${file(./.env.yml):CHANNEL_SECRET}
+    CHANNEL_ACCESS_TOKEN: ${file(./.env.yml):CHANNEL_ACCESS_TOKEN}
   webpackIncludeModules: true
 
 functions:

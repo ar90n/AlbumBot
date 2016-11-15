@@ -1,7 +1,6 @@
 const Promise = require('bluebird');
 const s3 = require('./s3').s3;
 const getObjectUrl = require('./s3').getObjectUrl;
-require('dotenv').config();
 
 const isOffline = () => !!process.env.IS_OFFLINE;
 
