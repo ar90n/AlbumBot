@@ -4,10 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha-webpack --webpack-config webpack.config-test.js test",
-    "deploy": "sls client deploy && sls deploy",
-    "deploy-frontend": "sls client deploy",
-    "deploy-backend": "sls deploy"
+    "test": "mocha-webpack --webpack-config webpack.config-test.js test"
   },
   "author": "Masahiro Wada<argon.argon.argon@gmail.com>",
   "license": "MIT",
