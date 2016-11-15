@@ -1,5 +1,5 @@
 const LINEBot = require('line-messaging');
-const objects = require('./objectStorage');
+const objects = require('./objectStore');
 
 require('dotenv').config();
 

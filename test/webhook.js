@@ -6,9 +6,9 @@ process.env.IS_OFFLINE = true;
 
 const crypto = require('crypto');
 const mod = require('../src/handler.js');
-const itemStorage = require('../src/lib/itemStorage.js');
-const talkStorage = require('../src/lib/talkStorage.js');
-const objectStorage = require('../src/lib/objectStorage.js');
+const itemStore = require('../src/lib/itemStore.js');
+const talkStore = require('../src/lib/talkStore.js');
+const objectStore = require('../src/lib/objectStore.js');
 const mochaPlugin = require('serverless-mocha-plugin');
 const nock = require('nock');
 const lambdaWrapper = mochaPlugin.lambdaWrapper;
@@ -32,8 +32,8 @@ describe('webhook', () => {
   });
 
   beforeEach((done) => {
-    itemStorage.clear().then(() => {
-      talkStorage.clear().then(() => {
+    itemStore.clear().then(() => {
+      talkStore.clear().then(() => {
         nock('https://api.line.me')
           .post('/v2/bot/message/reply')
           .reply(200, {});
@@ -76,7 +76,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStorage.get(sourceId, createdAt).then((res) => {
+      itemStore.get(sourceId, createdAt).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
@@ -117,12 +117,12 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStorage.get(sourceId, createdAt).then((res) => {
+      itemStore.get(sourceId, createdAt).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
         const item = res.Items[0];
-        const bucket = objectStorage.BUCKET_NAME;
+        const bucket = objectStore.BUCKET_NAME;
         const key = message.id;
         const objectUrl = `https://${bucket}/${key}`;
         expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt, objectUrl }));
@@ -161,12 +161,12 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStorage.get(sourceId, createdAt).then((res) => {
+      itemStore.get(sourceId, createdAt).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
         const item = res.Items[0];
-        const bucket = objectStorage.BUCKET_NAME;
+        const bucket = objectStore.BUCKET_NAME;
         const key = message.id;
         const objectUrl = `https://${bucket}/${key}`;
         expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt, objectUrl }));
@@ -289,7 +289,7 @@ describe('webhook', () => {
 
       callbackCount += 1;
       if (callbackCount === events.length) {
-        itemStorage.getAll().then((res) => {
+        itemStore.getAll().then((res) => {
           const count = res.Count;
           expect(count).to.equal(2);
 
@@ -337,7 +337,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStorage.get(sourceId, createdAt).then((res) => {
+      itemStore.get(sourceId, createdAt).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
@@ -379,7 +379,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStorage.get(sourceId, createdAt).then((res) => {
+      itemStore.get(sourceId, createdAt).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
@@ -413,7 +413,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, { talkId, passHash }) => {
       expect(err).to.be.null;
-      talkStorage.get(talkId).then((res) => {
+      talkStore.get(talkId).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
@@ -461,7 +461,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStorage.get(sourceId, createdAt).then((res) => {
+      itemStore.get(sourceId, createdAt).then((res) => {
         done();
       });
     });
@@ -497,7 +497,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStorage.get(sourceId, createdAt).then((res) => {
+      itemStore.get(sourceId, createdAt).then((res) => {
         done();
       });
     });

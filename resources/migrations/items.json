@@ -1,6 +1,6 @@
 {
   "Table": {
-    "TableName": "items",
+    "TableName": "itemStore",
     "KeySchema": [
       {
         "AttributeName": "sourceId",

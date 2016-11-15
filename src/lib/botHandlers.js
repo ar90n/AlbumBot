@@ -1,5 +1,5 @@
-const itemStorage = require('./itemStorage');
-const talkStorage = require('./talkStorage');
+const itemStore = require('./itemStore');
+const talkStore = require('./talkStore');
 const contentAccessor = require('./contentAccessor');
 const passGenerator = require('./passGenerator');
 const Promise = require('bluebird');
@@ -21,10 +21,10 @@ function isCommand({ type, text }) {
 }
 
 function replyPageUrl(bot, token, sourceId) {
-  const talkId = talkStorage.generateId(sourceId);
+  const talkId = talkStore.generateId(sourceId);
   const pageUrl = createPageUrl(talkId);
   const replyMessage = pageUrl;
-  return bot.replyText(token, replyMessage);
+  return bot.replyTextMessage(token, replyMessage);
 }
 
 function confirmNewPass(bot, token, newPass) {
@@ -32,7 +32,7 @@ function confirmNewPass(bot, token, newPass) {
   confirm.setMessage(`${newPass}?`);
   confirm.setPositiveAction('OK', 'ok');
   confirm.setNegativeAction('Cancel', 'cannel');
-  return bot.replyText(token, confirm);
+  return bot.replyTextMessage(token, confirm);
 }
 
 function evalCommand(bot, token, { sourceId, text }) {
@@ -61,7 +61,7 @@ function onMessage(callback, token, message) {
     if (isCommand(item)) {
       return evalCommand(this, token, item);
     } else {
-      return itemStorage.put(item);
+      return itemStore.put(item);
     }
   })
   .then(() => callback(null))
@@ -75,14 +75,14 @@ function onFollow(callback, token, message) {
   const sourceId = getSourceId(message);
   const createdAt = message.getTimestamp();
 
-  const talkId = talkStorage.generateId(sourceId);
+  const talkId = talkStore.generateId(sourceId);
   const defaultPassphrase = passGenerator.generate();
   const passHash = passGenerator.hash(defaultPassphrase);
-  talkStorage.put({ talkId, sourceId, createdAt, passHash })
+  talkStore.put({ talkId, sourceId, createdAt, passHash })
   .then(() => {
     const pageUrl = createPageUrl(talkId);
     const initialMessage = `url: ${pageUrl}`;
-    return this.replyText(token, initialMessage);
+    return this.replyTextMessage(token, initialMessage);
   })
   .then(() => callback(null, { talkId, passHash }))
   .catch((error) => {

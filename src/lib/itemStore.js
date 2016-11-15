@@ -4,7 +4,7 @@ require('dotenv').config();
 const isOffline = () => !!process.env.IS_OFFLINE;
 
 const TABLE_PREFIX = isOffline() ? '' : process.env.REMOTE_STAGE;
-const TABLE_NAME = `${TABLE_PREFIX}items`;
+const TABLE_NAME = `${TABLE_PREFIX}itemStore`;
 
 function getByRange(sourceId, beginCreatedAt, endCreatedAt) {
   let keyConditionExpression = '#sourceId = :sourceId';

@@ -1,6 +1,6 @@
 {
   "Table": {
-    "TableName": "talks",
+    "TableName": "talkStore",
     "KeySchema": [
       {
         "AttributeName": "talkId",

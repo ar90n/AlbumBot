@@ -4,7 +4,7 @@ require('dotenv').config();
 const isOffline = () => !!process.env.IS_OFFLINE;
 
 const TABLE_PREFIX = isOffline() ? '' : process.env.REMOTE_STAGE;
-const TABLE_NAME = `${TABLE_PREFIX}talks`;
+const TABLE_NAME = `${TABLE_PREFIX}talkStore`;
 
 function generateId(sourceId) {
   return 'aaaaa';
