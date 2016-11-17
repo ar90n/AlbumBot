@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const itemStore = require('./itemStore');
 const talkStore = require('./talkStore');
 const contentAccessor = require('./contentAccessor');
@@ -59,13 +60,12 @@ function onMessage(callback, token, message) {
     const item = Object.assign({}, { sourceId, createdAt, id, type }, content);
     if (isCommand(item)) {
       return evalCommand(this, token, item);
-    } else {
-      return itemStore.put(item);
     }
+    return itemStore.put(item);
   })
   .then(() => callback(null))
   .catch((error) => {
-    console.error(error);
+    logger.error(error);
     callback(error);
   });
 }
@@ -76,7 +76,7 @@ function onFollow(callback, token, message) {
 
   const talkId = talkStore.generateId(sourceId);
   const defaultPassphrase = passGenerator.generate();
-  const passHash = passGenerator.hash(defaultPassphrase);
+  const passHash = passGenerator.hash(defaultPassphrase, talkId);
   talkStore.put({ talkId, sourceId, createdAt, passHash })
   .then(() => {
     const pageUrl = createPageUrl(talkId);
@@ -85,7 +85,7 @@ function onFollow(callback, token, message) {
   })
   .then(() => callback(null, { talkId, passHash }))
   .catch((error) => {
-    console.error(error);
+    logger.error(error);
     callback(error);
   });
 }
