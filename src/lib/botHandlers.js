@@ -12,8 +12,26 @@ function getSourceId(message) {
          message.getRoomId();
 }
 
+function getReplyPageUrlMessage(pageUrl) {
+  return pageUrl;
+}
+
+function getOverviewMessage() {
+  return 'ご登録ありがとうございます．アルバムBot for Lineはグループに投稿された写真・動画を保存し，アルバムページを作成します．';
+}
+
+function getJoinMessage(pageUrl, passphrase) {
+  return `ご登録ありがとうございます．アルバムBot for Lineは投稿された写真・動画を保存し，アルバムページを作成します．
+
+アルバムページのURLとパスワードは以下のとおりです．
+URL：${pageUrl}
+パスワード：${passphrase}
+
+アルバムページのURLを再度表示する場合は「@URL」と，パスワードの更新は「@PASS 新しいパスワード」とメッセージして下さい．`;
+}
+
 function createPageUrl(talkId) {
-  return `http://example.com/${talkId}`;
+  return `http://album-bot.ar90n.net/album/${talkId}`;
 }
 
 function isCommand({ type, text }) {
@@ -23,7 +41,7 @@ function isCommand({ type, text }) {
 function replyPageUrl(bot, token, sourceId) {
   const talkId = talkStore.generateId(sourceId);
   const pageUrl = createPageUrl(talkId);
-  const replyMessage = pageUrl;
+  const replyMessage = getReplyPageUrlMessage(pageUrl);
   return bot.replyTextMessage(token, replyMessage);
 }
 
@@ -49,7 +67,14 @@ function evalCommand(bot, token, { sourceId, text }) {
   }
 }
 
-function onMessage(callback, token, message) {
+function onUserOrRoomMessage(callback, token, message) {
+  const sourceType = message.getEvent().source.type;
+  const errorMessage = `Unsupported source type: ${sourceType}`;
+  logger.error(errorMessage);
+  callback(errorMessage);
+}
+
+function onGroupMessage(callback, token, message) {
   const sourceId = getSourceId(message);
   const createdAt = message.getTimestamp();
   const id = message.getMessageId();
@@ -70,7 +95,22 @@ function onMessage(callback, token, message) {
   });
 }
 
-function onFollow(callback, token, message) {
+function onMessage(callback, token, message) {
+  const handler = message.isGroupEvent() ? onGroupMessage : onUserOrRoomMessage;
+  handler.bind(this)(callback, token, message);
+}
+
+function onInvitedToUserOrRoom(callback, token, message) {
+  const initialMessage = getOverviewMessage();
+  this.replyTextMessage(token, initialMessage)
+  .then(() => callback(null))
+  .catch((error) => {
+    logger.error(error);
+    callback(error);
+  });
+}
+
+function onInvitedToGroup(callback, token, message) {
   const sourceId = getSourceId(message);
   const createdAt = message.getTimestamp();
 
@@ -80,7 +120,7 @@ function onFollow(callback, token, message) {
   talkStore.put({ talkId, sourceId, createdAt, passHash })
   .then(() => {
     const pageUrl = createPageUrl(talkId);
-    const initialMessage = `url: ${pageUrl}`;
+    const initialMessage = getJoinMessage(pageUrl, defaultPassphrase);
     return this.replyTextMessage(token, initialMessage);
   })
   .then(() => callback(null, { talkId, passHash }))
@@ -90,7 +130,12 @@ function onFollow(callback, token, message) {
   });
 }
 
+function onInvited(callback, token, message) {
+  const handler = message.isGroupEvent() ? onInvitedToGroup : onInvitedToUserOrRoom;
+  handler.bind(this)(callback, token, message);
+}
+
 module.exports = {
   onMessage,
-  onFollow,
+  onInvited,
 };

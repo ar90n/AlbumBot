@@ -61,8 +61,8 @@ describe('webhook', () => {
         type: 'message',
         timestamp: createdAt,
         source: {
-          type: 'user',
-          userId: sourceId,
+          type: 'group',
+          groupId: sourceId,
         },
         message,
       }],
@@ -102,8 +102,8 @@ describe('webhook', () => {
         type: 'message',
         timestamp: createdAt,
         source: {
-          type: 'user',
-          userId: sourceId,
+          type: 'group',
+          groupId: sourceId,
         },
         message,
       }],
@@ -146,8 +146,8 @@ describe('webhook', () => {
         type: 'message',
         timestamp: createdAt,
         source: {
-          type: 'user',
-          userId: sourceId,
+          type: 'group',
+          groupId: sourceId,
         },
         message,
       }],
@@ -190,8 +190,8 @@ describe('webhook', () => {
         type: 'message',
         timestamp: createdAt,
         source: {
-          type: 'user',
-          userId: sourceId,
+          type: 'group',
+          groupId: sourceId,
         },
         message,
       }],
@@ -225,8 +225,8 @@ describe('webhook', () => {
         type: 'message',
         timestamp: createdAt,
         source: {
-          type: 'user',
-          userId: sourceId,
+          type: 'group',
+          groupId: sourceId,
         },
         message,
       }],
@@ -252,8 +252,8 @@ describe('webhook', () => {
       type: 'message',
       timestamp: 1462629479859,
       source: {
-        type: 'user',
-        userId: 'U206d25c2ea6bd87c17655609a1c37cb8',
+        type: 'group',
+        groupId: 'U206d25c2ea6bd87c17655609a1c37cb8',
       },
       message: {
         id: '325708',
@@ -266,8 +266,8 @@ describe('webhook', () => {
         type: 'message',
         timestamp: 1462629479860,
         source: {
-          type: 'user',
-          userId: 'U206d25c2ea6bd87c17655609a1c37cb8',
+          type: 'group',
+          groupId: 'U206d25c2ea6bd87c17655609a1c37cb8',
         },
         message: {
           id: '325709',
@@ -294,11 +294,11 @@ describe('webhook', () => {
           expect(count).to.equal(2);
 
           const item0 = res.Items[0];
-          const expectedItem0 = Object.assign({}, events[0].message, { sourceId: events[0].source.userId, createdAt: events[0].timestamp });
+          const expectedItem0 = Object.assign({}, events[0].message, { sourceId: events[0].source.groupId, createdAt: events[0].timestamp });
           expect(item0).to.deep.equal(expectedItem0);
 
           const item1 = res.Items[1];
-          const expectedItem1 = Object.assign({}, events[1].message, { sourceId: events[1].source.userId, createdAt: events[1].timestamp });
+          const expectedItem1 = Object.assign({}, events[1].message, { sourceId: events[1].source.groupId, createdAt: events[1].timestamp });
           expect(item1).to.deep.equal(expectedItem1);
 
           done();
@@ -307,7 +307,7 @@ describe('webhook', () => {
     });
   });
 
-  it('add text message item into db when text message is sent from group', (done) => {
+  it('add text message item into db when text message is sent from user', (done) => {
     const sourceId = 'cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
     const createdAt = 1462629479859;
     const message = {
@@ -322,7 +322,7 @@ describe('webhook', () => {
         type: 'message',
         timestamp: createdAt,
         source: {
-          type: 'group',
+          type: 'user',
           groupId: sourceId,
         },
         message,
@@ -336,16 +336,10 @@ describe('webhook', () => {
     };
 
     wrapped.run({ body, headers }, (err, response) => {
-      expect(err).to.be.null;
-      itemStore.get(sourceId, createdAt).then((res) => {
-        const count = res.Count;
-        expect(count).to.equal(1);
+      expect(err).to.be.not.null;
+      expect(err).to.be.equal('Unsupported source type: user');
 
-        const item = res.Items[0];
-        expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt }));
-
-        done();
-      });
+      done();
     });
   });
 
@@ -378,29 +372,23 @@ describe('webhook', () => {
     };
 
     wrapped.run({ body, headers }, (err, response) => {
-      expect(err).to.be.null;
-      itemStore.get(sourceId, createdAt).then((res) => {
-        const count = res.Count;
-        expect(count).to.equal(1);
+      expect(err).to.be.not.null;
+      expect(err).to.be.equal('Unsupported source type: room');
 
-        const item = res.Items[0];
-        expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt }));
-
-        done();
-      });
+      done();
     });
   });
 
-  it('create a talk into db when follow event is received', (done) => {
+  it('create talk item when join event is received from group', (done) => {
     const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479859;
     const events = [{
       replyToken: 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',
-      type: 'follow',
+      type: 'join',
       timestamp: createdAt,
       source: {
-        type: 'user',
-        userId: sourceId,
+        type: 'group',
+        groupId: sourceId,
       },
     }];
 
@@ -411,7 +399,7 @@ describe('webhook', () => {
       'X-Line-Signature': signature,
     };
 
-    wrapped.run({ body, headers }, (err, { talkId, passHash }) => {
+    wrapped.run({ body, headers }, (err, {talkId, passHash}) => {
       expect(err).to.be.null;
       talkStore.get(talkId).then((res) => {
         const count = res.Count;
@@ -431,6 +419,58 @@ describe('webhook', () => {
     });
   });
 
+  it('ignore join event from room', (done) => {
+    const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
+    const createdAt = 1462629479859;
+    const events = [{
+      replyToken: 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',
+      type: 'join',
+      timestamp: createdAt,
+      source: {
+        type: 'room',
+        roomId: sourceId,
+      },
+    }];
+
+    const body = { events };
+    const signature = crypto.createHmac('sha256', channelSecret).update(JSON.stringify(body)).digest('base64');
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Line-Signature': signature,
+    };
+
+    wrapped.run({ body, headers }, (err, response) => {
+      expect(response).to.be.undefined;
+      done();
+    });
+  });
+
+  it('ignore follow event', (done) => {
+    const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
+    const createdAt = 1462629479859;
+    const events = [{
+      replyToken: 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',
+      type: 'follow',
+      timestamp: createdAt,
+      source: {
+        type: 'user',
+        userId: sourceId,
+      },
+    }];
+
+    const body = { events };
+    const signature = crypto.createHmac('sha256', channelSecret).update(JSON.stringify(body)).digest('base64');
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Line-Signature': signature,
+    };
+
+    wrapped.run({ body, headers }, (err, response) => {
+      expect(response).to.be.undefined;
+      done();
+    });
+  });
+
   it('reply page url when url command is received', (done) => {
     const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479859;
@@ -446,8 +486,8 @@ describe('webhook', () => {
         type: 'message',
         timestamp: createdAt,
         source: {
-          type: 'user',
-          userId: sourceId,
+          type: 'group',
+          groupId: sourceId,
         },
         message,
       }],
@@ -482,8 +522,8 @@ describe('webhook', () => {
         type: 'message',
         timestamp: createdAt,
         source: {
-          type: 'user',
-          userId: sourceId,
+          type: 'group',
+          groupId: sourceId,
         },
         message,
       }],
