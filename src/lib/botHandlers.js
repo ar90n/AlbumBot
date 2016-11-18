@@ -7,9 +7,13 @@ const Promise = require('bluebird');
 const LINEBot = require('line-messaging');
 
 function getSourceId(message) {
-  return message.isUserEvent() ? message.getUserId() :
-         message.isGroupEvent() ? message.getGroupId() :
-         message.getRoomId();
+  if (message.isUserEvent()) {
+    return message.getUserId();
+  } else if (message.isGroupEvent()) {
+    return message.getGroupId();
+  }
+
+  return message.getRoomId();
 }
 
 function getReplyPageUrlMessage(pageUrl) {
@@ -100,7 +104,7 @@ function onMessage(callback, token, message) {
   handler.bind(this)(callback, token, message);
 }
 
-function onInvitedToUserOrRoom(callback, token, message) {
+function onInvitedToUserOrRoom(callback, token) {
   const initialMessage = getOverviewMessage();
   this.replyTextMessage(token, initialMessage)
   .then(() => callback(null))

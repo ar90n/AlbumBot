@@ -6,7 +6,7 @@ const TABLE_PREFIX = isOffline() ? '' : process.env.REMOTE_STAGE;
 const TABLE_NAME = `${TABLE_PREFIX}talkStore`;
 
 function generateId(sourceId) {
-  return 'aaaaa';
+  return sourceId;
 }
 
 function get(talkId) {
