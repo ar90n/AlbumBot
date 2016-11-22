@@ -35,17 +35,35 @@ function put(item) {
   });
 }
 
+function update(talkId, item) {
+  const updateExpression = Object.keys(item).reduce((prev, curr, index) => {
+    const prefix = (index === 0) ? 'set' : ',';
+    return `${prev} ${prefix} ${curr} = :${curr}`;
+  }, '');
+  const expressionAttributeValues = Object.keys(item).reduce((prev, curr) => {
+    const key = `:${curr}`;
+    return Object.assign(prev, { [key]: item[curr] });
+  }, {});
+
+  return db('update', {
+    TableName: TABLE_NAME,
+    Key: { talkId },
+    UpdateExpression: updateExpression,
+    ExpressionAttributeValues: expressionAttributeValues,
+    ReturnValues: 'UPDATED_NEW',
+  });
+}
+
 function clear() {
   return db('scan', {
     TableName: TABLE_NAME,
-  }).then(({ Items }) =>
-       Promise.all(Items.map(({ talkId }) =>
-         db('delete', {
-           TableName: TABLE_NAME,
-           Key: { talkId },
-         })
-      ))
-  );
+  }).then(({ Items }) => {
+    const deleteResults = Items.map(({ talkId }) => {
+      const Key = { talkId };
+      return db('delete', { TableName: TABLE_NAME, Key });
+    });
+    return Promise.all(deleteResults);
+  });
 }
 
 module.exports = {
@@ -53,6 +71,7 @@ module.exports = {
   get,
   getAll,
   put,
+  update,
   clear,
   TABLE_NAME,
 };

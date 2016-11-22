@@ -23,7 +23,12 @@ const nouns = ['アイアイ', 'アカギツネ', 'アカクモザル', 'アカ�
   'ミツオビアルマジロ', 'ミニブタ', 'ミミセンザンコウ', 'ムササビ', 'モルモット', 'ヤクシカ', 'ヤクシマザル', 'ユーラシアカワウソ', 'ユキヒョウ', 'ライオン', 'ラマ',
   'リスザル', 'レッサーパンダ', 'ロバ', 'ワオキツネザル', 'ワタボウシタマリン'];
 
-function generate() {
+function generateToken() {
+  const data = Math.random().toString();
+  return crypto.createHash('sha256').update(data).digest('base64');
+}
+
+function generatePass() {
   const adjIndex0 = isTest() ? 0 : Math.floor(Math.random() * adjectives.length);
   const adjIndex1 = isTest() ? 1 : Math.floor(Math.random() * adjectives.length);
   const nounIndex = isTest() ? 0 : Math.floor(Math.random() * nouns.length);
@@ -42,6 +47,7 @@ function hash(passphrase, id) {
 }
 
 module.exports = {
-  generate,
+  generateToken,
+  generatePass,
   hash,
 };

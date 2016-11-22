@@ -46,14 +46,13 @@ function put(item) {
 function clear() {
   return db('scan', {
     TableName: TABLE_NAME,
-  }).then(({ Items }) =>
-       Promise.all(Items.map(({ sourceId, createdAt }) =>
-         db('delete', {
-           TableName: TABLE_NAME,
-           Key: { sourceId, createdAt },
-         })
-      ))
-  );
+  }).then(({ Items }) => {
+    const deleteResults = Items.map(({ sourceId, createdAt }) => {
+      const Key = { sourceId, createdAt };
+      return db('delete', { TableName: TABLE_NAME, Key });
+    });
+    return Promise.all(deleteResults);
+  });
 }
 
 module.exports = {

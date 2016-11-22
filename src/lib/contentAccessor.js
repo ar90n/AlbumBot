@@ -7,9 +7,8 @@ function fetchText(message) {
 
 function fetchBlob(bot, message) {
   const messageId = message.getMessageId();
-  return bot.getMessageContent(messageId).then(data =>
-     objects.put({ key: messageId, body: data })
-  );
+  return bot.getMessageContent(messageId)
+  .then(data => objects.put({ key: messageId, body: data }));
 }
 
 function fetch(bot, message) {
