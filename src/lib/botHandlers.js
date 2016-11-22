@@ -31,7 +31,7 @@ function getJoinMessage(pageUrl, passphrase) {
 URL：${pageUrl}
 合言葉：${passphrase}
 
-アルバムページのURLを再度表示する場合は「@URL」と，合言葉の更新は「@PASS 新しいパスワード」とメッセージして下さい．`;
+アルバムページのURLを再度表示する場合は「@URL」と，合言葉の変更は「@PASS 新しいパスワード」とメッセージして下さい．`;
 }
 
 function createPageUrl(talkId) {
@@ -169,7 +169,7 @@ function onPostback(callback, token, message) {
     const passHash = postbackData.passHash;
     const passToken = passGenerator.generateToken();
     const updateValues = passHash ? { passHash, passToken } : { passToken };
-    const completeMessage = passHash ? '合言葉を更新しました' : 'キャンセルしました';
+    const completeMessage = passHash ? '合言葉を変更しました' : 'キャンセルしました';
     return talkStore.update(talkId, updateValues)
     .then(() => this.replyTextMessage(token, completeMessage))
     .then(() => callback(null, updateValues));
