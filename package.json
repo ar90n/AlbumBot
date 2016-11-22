@@ -27,6 +27,7 @@
     "mocha-webpack": "^0.7.0",
     "nock": "^9.0.2",
     "serverless": "^1.1.0",
+    "serverless-client-s3": "git+https://github.com/ar90n/serverless-client-s3.git#serverless_1.0.3_compatibility",
     "serverless-dynamodb-local": "0.2.17",
     "serverless-mocha-plugin": "^1.0.3",
     "serverless-plugin-write-env-vars": "1.0.1",

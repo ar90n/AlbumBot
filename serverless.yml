@@ -72,6 +72,7 @@ plugins:
   - serverless-plugin-write-env-vars
   - serverless-mocha-plugin
   - serverless-webpack
+  - serverless-client-s3
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -92,6 +93,8 @@ custom:
     CHANNEL_SECRET: ${file(./.env.yml):CHANNEL_SECRET}
     CHANNEL_ACCESS_TOKEN: ${file(./.env.yml):CHANNEL_ACCESS_TOKEN}
   webpackIncludeModules: true
+  client:
+    bucketName: ${self:custom.stage}-www-bucket-for-album-bot
 
 functions:
   webhook:
