@@ -104,3 +104,10 @@ functions:
           method: POST
           path: webhook
           integration: lambda
+  api:
+    handler: src/handler.api
+    events:
+      - http:
+          method: ANY
+          path: api/{proxy+}
+          integration: lambda-proxy
