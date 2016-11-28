@@ -24,7 +24,7 @@ const nouns = ['アイアイ', 'アカギツネ', 'アカクモザル', 'アカ�
   'リスザル', 'レッサーパンダ', 'ロバ', 'ワオキツネザル', 'ワタボウシタマリン'];
 
 function generateToken() {
-  const data = Math.random().toString();
+  const data = isTest() ? 'test_data' : Math.random().toString();
   return crypto.createHash('sha256').update(data).digest('base64');
 }
 

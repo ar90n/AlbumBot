@@ -45,6 +45,19 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    SessionStore:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.stage}sessionStore
+        AttributeDefinitions:
+          - AttributeName: sessionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: sessionId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
     BlobBucket:
       Type: AWS::S3::Bucket
       Properties:

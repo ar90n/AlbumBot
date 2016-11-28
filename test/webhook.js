@@ -78,7 +78,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStore.get(sourceId, createdAt).then((res) => {
+      itemStore.get( { sourceId, createdAt }).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
@@ -119,7 +119,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStore.get(sourceId, createdAt).then((res) => {
+      itemStore.get( { sourceId, createdAt } ).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
@@ -163,7 +163,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStore.get(sourceId, createdAt).then((res) => {
+      itemStore.get( {sourceId, createdAt } ).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
@@ -401,7 +401,7 @@ describe('webhook', () => {
       'X-Line-Signature': signature,
     };
 
-    wrapped.run({ body, headers }, (err, {talkId, passHash, passToken}) => {
+    wrapped.run({ body, headers }, (err, {talkId, passHash, updateToken}) => {
       expect(err).to.be.null;
       talkStore.get(talkId).then((res) => {
         const count = res.Count;
@@ -412,7 +412,7 @@ describe('webhook', () => {
           talkId,
           sourceId,
           passHash,
-          passToken,
+          updateToken,
           createdAt,
         };
         expect(talk).to.deep.equal(expectedTalk);
@@ -504,7 +504,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, response) => {
       expect(err).to.be.null;
-      itemStore.get(sourceId, createdAt).then((res) => {
+      itemStore.get( { sourceId, createdAt } ).then((res) => {
         done();
       });
     });
@@ -541,13 +541,13 @@ describe('webhook', () => {
 
     const talkId = talkStore.generateId( sourceId );
     const passHash = passGenerator.hash( passPhrase, talkId );
-    const passToken = '123456789';
+    const updateToken = '123456789';
     talkStore.put({
       talkId,
       sourceId,
       createdAt,
       passHash,
-      passToken
+      updateToken
     }).then( ()=>{
       wrapped.run({ body, headers }, (err, response) => {
         expect(err).to.be.null;
@@ -558,18 +558,18 @@ describe('webhook', () => {
           expect(count).to.equal(1);
 
           const talk = talkResponse.Items[0];
-          expect(talk.passToken).to.equal(response.passToken);
+          expect(talk.updateToken).to.equal(response.updateToken);
           done();
         })
       });
     });
   });
 
-  it('update passHash and passToken when valid passUpdate postback event which has passHash is received', (done) => {
+  it('update passHash and updateToken when valid passUpdate postback event which has passHash is received', (done) => {
     const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479859;
     const postback = {
-      data: "{\"type\":\"updatePass\",\"passHash\":\"4l2iPHiFddehdtoUDW3na2d0+LSCIWKCRIGJsqNIHlI=\",\"passToken\":\"1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=\"}"
+      data: "{\"type\":\"updatePass\",\"passHash\":\"4l2iPHiFddehdtoUDW3na2d0+LSCIWKCRIGJsqNIHlI=\",\"updateToken\":\"1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=\"}"
     };
 
     const body = {
@@ -592,14 +592,14 @@ describe('webhook', () => {
     };
 
     const passHash = '-';
-    const passToken = '1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=';
+    const updateToken = '1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=';
     const talkId = talkStore.generateId( sourceId );
     talkStore.put({
       talkId,
       sourceId,
       createdAt,
       passHash,
-      passToken
+      updateToken
     }).then( ()=>{
       wrapped.run({ body, headers }, (err, response) => {
         expect(err).to.be.null;
@@ -609,20 +609,20 @@ describe('webhook', () => {
 
           const talk = talkResponse.Items[0];
           const newPassHash = talk.passHash;
-          const newPassToken = talk.passToken;
+          const newPassToken = talk.updateToken;
           expect(newPassHash).to.equal('4l2iPHiFddehdtoUDW3na2d0+LSCIWKCRIGJsqNIHlI=');
-          expect(newPassToken).to.not.equal(passToken);
+          expect(newPassToken).to.not.equal(updateToken);
           done();
         });
       });
     });
   });
 
-  it('update only passToken when valid passUpdate postback event which doesn\'t have passHash is received', (done) => {
+  it('update only updateToken when valid passUpdate postback event which doesn\'t have passHash is received', (done) => {
     const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479859;
     const postback = {
-      data: "{\"type\":\"updatePass\",\"passToken\":\"1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=\"}"
+      data: "{\"type\":\"updatePass\",\"updateToken\":\"1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=\"}"
     };
 
     const body = {
@@ -645,14 +645,14 @@ describe('webhook', () => {
     };
 
     const passHash = '-';
-    const passToken = '1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=';
+    const updateToken = '1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=';
     const talkId = talkStore.generateId( sourceId );
     talkStore.put({
       talkId,
       sourceId,
       createdAt,
       passHash,
-      passToken
+      updateToken
     }).then( ()=>{
       wrapped.run({ body, headers }, (err, response) => {
         expect(err).to.be.null;
@@ -662,9 +662,9 @@ describe('webhook', () => {
 
           const talk = talkResponse.Items[0];
           const newPassHash = talk.passHash;
-          const newPassToken = talk.passToken;
+          const newPassToken = talk.updateToken;
           expect(newPassHash).to.equal(passHash);
-          expect(newPassToken).to.not.equal(passToken);
+          expect(newPassToken).to.not.equal(updateToken);
           done();
         });
       });
@@ -675,7 +675,7 @@ describe('webhook', () => {
     const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479859;
     const postback = {
-      data: "{\"type\":\"updatePass\",\"passToken\":\"1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=\"}"
+      data: "{\"type\":\"updatePass\",\"updateToken\":\"1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=\"}"
     };
 
     const body = {
@@ -698,18 +698,18 @@ describe('webhook', () => {
     };
 
     const passHash = '-';
-    const passToken = '1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjd=';
+    const updateToken = '1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjd=';
     const talkId = talkStore.generateId( sourceId );
     talkStore.put({
       talkId,
       sourceId,
       createdAt,
       passHash,
-      passToken
+      updateToken
     }).then( ()=>{
       wrapped.run({ body, headers }, (err, response) => {
         expect(err).to.be.not.null;
-        expect(err.message).to.be.equal('Invalid passToken to update passHash: 1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=');
+        expect(err.message).to.be.equal('Invalid updateToken to update passHash: 1Dezj+eP+9epic+kIE4W64F41GrcmZeEjKAjNqGGDjs=');
 
         done();
       });

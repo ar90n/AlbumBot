@@ -5,29 +5,38 @@ const isOffline = () => !!process.env.IS_OFFLINE;
 const TABLE_PREFIX = isOffline() ? '' : process.env.REMOTE_STAGE;
 const TABLE_NAME = `${TABLE_PREFIX}itemStore`;
 
-function getByRange(sourceId, beginCreatedAt, endCreatedAt) {
-  let keyConditionExpression = '#sourceId = :sourceId';
-  if (!!beginCreatedAt && !!endCreatedAt) {
-    keyConditionExpression += ' AND #createdAt BETWEEN :beginCreatedAt AND :endCreatedAt';
+function getByRange({ sourceId, limit, beginCreatedAt, endCreatedAt }) {
+  if (limit === 0) {
+    return { Items: [], Count: 0 };
   }
+
+  let KeyConditionExpression = '#sourceId = :sourceId';
+  let ExpressionAttributeValues = { ':sourceId': sourceId };
+  let ExpressionAttributeNames = { '#sourceId': 'sourceId' };
+  if (!!beginCreatedAt && !!endCreatedAt) {
+    KeyConditionExpression += ' AND #createdAt BETWEEN :beginCreatedAt AND :endCreatedAt';
+    ExpressionAttributeValues = Object.assign(ExpressionAttributeValues, { ':beginCreatedAt': beginCreatedAt, ':endCreatedAt': endCreatedAt });
+    ExpressionAttributeNames = Object.assign(ExpressionAttributeNames, { '#createdAt': 'createdAt' });
+  } else if (beginCreatedAt) {
+    KeyConditionExpression += ' AND #createdAt >= :beginCreatedAt';
+    ExpressionAttributeValues = Object.assign(ExpressionAttributeValues, { ':beginCreatedAt': beginCreatedAt });
+    ExpressionAttributeNames = Object.assign(ExpressionAttributeNames, { '#createdAt': 'createdAt' });
+  }
+  const ScanIndexForward = false;
+  const Limit = limit || 65536;
 
   return db('query', {
     TableName: TABLE_NAME,
-    KeyConditionExpression: keyConditionExpression,
-    ExpressionAttributeValues: {
-      ':sourceId': sourceId,
-      ':beginCreatedAt': beginCreatedAt,
-      ':endCreatedAt': endCreatedAt,
-    },
-    ExpressionAttributeNames: {
-      '#sourceId': 'sourceId',
-      '#createdAt': 'createdAt',
-    },
+    KeyConditionExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
+    Limit,
+    ScanIndexForward,
   });
 }
 
-function get(sourceId, createdAt) {
-  return getByRange(sourceId, createdAt, createdAt);
+function get({ sourceId, limit, createdAt }) {
+  return getByRange({ sourceId, limit, beginCreatedAt: createdAt, endCreatedAt: createdAt });
 }
 
 function getAll() {

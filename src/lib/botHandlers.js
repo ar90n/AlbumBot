@@ -50,12 +50,12 @@ function replyPageUrl(bot, token, talkId) {
 
 function confirmNewPass(bot, token, talkId, newPass) {
   const passHash = passGenerator.hash(newPass, talkId);
-  const passToken = passGenerator.generateToken();
-  return talkStore.update(talkId, { passToken }).then(() => {
+  const updateToken = passGenerator.generateToken();
+  return talkStore.update(talkId, { updateToken }).then(() => {
     const type = 'updatePass';
     const confirm = new LINEBot.ConfirmTemplateBuilder();
-    const positiveData = { type, passHash, passToken };
-    const negativeData = { type, passToken };
+    const positiveData = { type, passHash, updateToken };
+    const negativeData = { type, updateToken };
     confirm.setMessage(`合言葉を「${newPass}」に変更しますか?`)
            .setPositiveAction('はい', JSON.stringify(positiveData), LINEBot.Action.POSTBACK)
            .setNegativeAction('いいえ', JSON.stringify(negativeData), LINEBot.Action.POSTBACK);
@@ -129,14 +129,14 @@ function onInvitedToGroup(callback, token, message) {
   const talkId = talkStore.generateId(sourceId);
   const defaultPassphrase = passGenerator.generatePass();
   const passHash = passGenerator.hash(defaultPassphrase, talkId);
-  const passToken = passGenerator.generateToken();
-  talkStore.put({ talkId, sourceId, createdAt, passHash, passToken })
+  const updateToken = passGenerator.generateToken();
+  talkStore.put({ talkId, sourceId, createdAt, passHash, updateToken })
   .then(() => {
     const pageUrl = createPageUrl(talkId);
     const initialMessage = getJoinMessage(pageUrl, defaultPassphrase);
     return this.replyTextMessage(token, initialMessage);
   })
-  .then(() => callback(null, { talkId, passHash, passToken }))
+  .then(() => callback(null, { talkId, passHash, updateToken }))
   .catch((error) => {
     logger.error(error);
     callback(error);
@@ -159,16 +159,16 @@ function onPostback(callback, token, message) {
     }
 
     const talk = response.Items[0];
-    if (talk.passToken !== postbackData.passToken) {
+    if (talk.updateToken !== postbackData.updateToken) {
       const rejectMessage = '無効な操作です';
       return this.replyTextMessage(token, rejectMessage).then(() => {
-        throw new Error(`Invalid passToken to update passHash: ${postbackData.passToken}`);
+        throw new Error(`Invalid updateToken to update passHash: ${postbackData.updateToken}`);
       });
     }
 
     const passHash = postbackData.passHash;
-    const passToken = passGenerator.generateToken();
-    const updateValues = passHash ? { passHash, passToken } : { passToken };
+    const updateToken = passGenerator.generateToken();
+    const updateValues = passHash ? { passHash, updateToken } : { updateToken };
     const completeMessage = passHash ? '合言葉を変更しました' : 'キャンセルしました';
     return talkStore.update(talkId, updateValues)
     .then(() => this.replyTextMessage(token, completeMessage))
