@@ -1,3 +1,5 @@
+/* eslint no-console: "off" */
+
 module.exports = {
   debug: ((process.env.LOG_LEVEL || 5) >= 5) ? console.debug : () => {},
   info: ((process.env.LOG_LEVEL || 5) >= 4) ? console.info : () => {},

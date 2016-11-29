@@ -4,7 +4,7 @@ const sessionAuthorizer = require('../lib/sessionAuthorizer');
 const logger = require('../lib/logger');
 const cookie = require('cookie');
 
-module.exports = function (hasAuth, dummy0, dummy1, bodyParams) {
+module.exports = (hasAuth, dummy0, dummy1, bodyParams) => {
   const talkId = bodyParams.talkId;
   const passPhrase = bodyParams.passPhrase;
   const autoLogin = bodyParams.autoLogin;
