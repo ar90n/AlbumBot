@@ -125,8 +125,9 @@ describe('webhook', () => {
 
         const item = res.Items[0];
         const bucket = objectStore.BUCKET_NAME;
+        const stage = 'us-east-1';
         const key = message.id;
-        const objectUrl = `https://${bucket}/${key}`;
+        const objectUrl = `https://${bucket}.s3-website-${stage}.amazonaws.com/${key}.jpg`;
         expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt, objectUrl }));
 
         done();
@@ -169,8 +170,9 @@ describe('webhook', () => {
 
         const item = res.Items[0];
         const bucket = objectStore.BUCKET_NAME;
+        const stage = 'us-east-1';
         const key = message.id;
-        const objectUrl = `https://${bucket}/${key}`;
+        const objectUrl = `https://${bucket}.s3-website-${stage}.amazonaws.com/${key}.mp4`;
         expect(item).to.deep.equal(Object.assign({}, message, { sourceId, createdAt, objectUrl }));
 
         done();

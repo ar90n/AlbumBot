@@ -104,7 +104,8 @@ custom:
     REMOTE_STAGE: ${self:custom.stage}
     CHANNEL_ID: ${file(./.env.yml):CHANNEL_ID}
     CHANNEL_SECRET: ${file(./.env.yml):CHANNEL_SECRET}
-    CHANNEL_ACCESS_TOKEN: ${file(./.env.yml):CHANNEL_ACCESS_TOKEN}
+    CHANNEL_ACCESS_TOKEN: ${file(./.env.yml):CHANNEL_ACCESS_TOKEN
+    HOSTING_URL: s3-website-${self:provider.region}.amazonaws.com
   webpackIncludeModules: true
   client:
     bucketName: ${self:custom.stage}-www-bucket-for-album-bot

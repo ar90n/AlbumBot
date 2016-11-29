@@ -11,7 +11,8 @@ const s3OfflineOptions = {
 const client = isOffline() ? new AWS.S3(s3OfflineOptions) : new AWS.S3();
 
 function getObjectUrl({ Bucket, Key }) {
-  return `https://${Bucket}/${Key}`;
+  const hostingUrl = process.env.HOSTING_URL;
+  return `https://${Bucket}.${hostingUrl}/${Key}`;
 }
 
 function s3(method, params) {
