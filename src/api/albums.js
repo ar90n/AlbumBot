@@ -1,5 +1,7 @@
 const itemStore = require('../lib/itemStore');
 const talkStore = require('../lib/talkStore');
+const ErrorResponse = require('../lib/ErrorResponse');
+const logger = require('../lib/logger');
 
 function parseParameters(params) {
   const paramConfigs = {
@@ -27,12 +29,14 @@ function parseParameters(params) {
 
 module.exports = (hasAuth, talkId, funcParams) => {
   if (!hasAuth) {
-    throw new Error('Reject api call without authorization');
+    logger.log('Reject api call without authorization');
+    throw new ErrorResponse(401, 'Reject api call without authorization');
   }
 
   return talkStore.get(talkId).then((response) => {
     if (response.Count !== 1) {
-      throw new Error(`Invalid talkId to get contents: ${talkId}`);
+      logger.error(`Invalid talkId to get contents: ${talkId}`);
+      throw new ErrorReponse(400, 'Invalid talkId to get contents');
     }
 
     const sourceId = response.Items[0].sourceId;

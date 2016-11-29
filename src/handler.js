@@ -4,6 +4,7 @@ const botHandlers = require('./lib/botHandlers');
 const sessionAuthorizer = require('./lib/sessionAuthorizer');
 const logger = require('./lib/logger');
 const api = require('./api/index');
+const strings = require('locutus/php/strings');
 
 module.exports.webhook = (event, context, callback) => {
   logger.log(`Event:${JSON.stringify(event)}`);
@@ -30,7 +31,8 @@ module.exports.api = (event, context, callback) => {
   const cookieValues = cookie.parse(cookieValueStr);
   sessionAuthorizer.check(cookieValues).then(({ hasAuth }) => {
     const httpMethod = event.httpMethod.toLowerCase();
-    const bodyParams = event.body;
+    const bodyParams = {};
+    strings.parse_str(event.body, bodyParams);
     const [apiVersion, funcName, talkId, ...pathParams] = event.pathParameters.proxy.split('/');
     return api.exec(hasAuth, httpMethod, apiVersion, funcName, talkId, pathParams, bodyParams)
     .then((response) => {
@@ -39,11 +41,10 @@ module.exports.api = (event, context, callback) => {
   })
   .catch((error) => {
     logger.error(error);
-    const response = {
-      statusCode: 503,
-      headers: {},
-      body: error.toString(),
-    };
+    const statusCode = error.statusCode || 500;
+    const headers = {};
+    const body = error.body || 'Internal Server Error';
+    const response = { statusCode, headers, body };
     callback(null, response);
   });
 };

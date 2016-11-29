@@ -12,8 +12,9 @@ function create(autoLogin) {
   const expireAt = Date.now() + timeout;
   const sessionId = passGenerator.generateToken();
   const session = { sessionId, timeout, expireAt };
+  const hasAuth = true;
 
-  return sessionStore.put({ sessionId, timeout, expireAt }).then(() => Promise.resolve(session));
+  return sessionStore.put({ sessionId, timeout, expireAt, hasAuth }).then(() => Promise.resolve(session));
 }
 
 function check({ sessionId }) {

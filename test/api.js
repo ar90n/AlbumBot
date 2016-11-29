@@ -209,10 +209,10 @@ describe('api', () => {
       expect(err).to.be.null;
 
       const statusCode = response.statusCode;
-      expect( statusCode  ).to.equal( 503 );
+      expect( statusCode  ).to.equal( 401 );
 
       const body = response.body;
-      expect( body ).to.equal( 'Error: Reject api call without authorization' );
+      expect( body ).to.equal( 'Reject api call without authorization' );
 
       const headers = response.headers;
       expect( headers ).to.deep.equal( {} );
@@ -234,10 +234,10 @@ describe('api', () => {
         expect(err).to.be.null;
 
         const statusCode = response.statusCode;
-        expect( statusCode  ).to.equal( 503 );
+        expect( statusCode  ).to.equal( 401 );
 
         const body = response.body;
-        expect( body ).to.equal( 'Error: Reject api call without authorization' );
+        expect( body ).to.equal( 'Reject api call without authorization' );
 
         const headers = response.headers;
         expect( headers ).to.deep.equal( {} );
@@ -249,10 +249,10 @@ describe('api', () => {
 
   it('authentification correctly', (done) => {
     const talkId = 'Cc153a8d971a6fbd1e2357d92cdc7348e';
-    const passPhrase = '力強く汚らわしいコクチョウ';
+    const passPhrase = encodeURIComponent('力強く汚らわしいコクチョウ');
     const httpMethod = 'POST';
     const pathParameters = { proxy: 'v1/auth' };
-    const body = { talkId, passPhrase };
+    const body = `talkId=${talkId}&passPhrase=${passPhrase}`;
     const headers = {};
 
     wrapped.run({ body, headers, httpMethod, pathParameters }, (err, response) => {
@@ -275,20 +275,20 @@ describe('api', () => {
 
   it('authentification is failed', (done) => {
     const talkId = 'Cc153a8d971a6fbd1e2357d92cdc7348e';
-    const passPhrase = '力強く汚らわしいコクチョ';
+    const passPhrase = encodeURIComponent('力強く汚らわしいコクチョ');
     const httpMethod = 'POST';
     const pathParameters = { proxy: 'v1/auth' };
-    const body = { talkId, passPhrase };
+    const body = `talkId=${talkId}&passPhrase=${passPhrase}`;
     const headers = { };
 
     wrapped.run({ body, headers, httpMethod, pathParameters }, (err, response) => {
       expect(err).to.be.null;
 
       const statusCode = response.statusCode;
-      expect( statusCode  ).to.equal( 503 );
+      expect( statusCode  ).to.equal( 401 );
 
       const body = response.body;
-      expect( body ).to.equal( 'Error: Failed to authorize' );
+      expect( body ).to.equal( 'Failed to authorize' );
 
       const headers = response.headers;
       expect( headers ).to.deep.equal( {} );
