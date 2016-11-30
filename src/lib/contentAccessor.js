@@ -9,7 +9,7 @@ function fetchBlob(bot, message, suffix) {
   const messageId = message.getMessageId();
   const key = `${messageId}.${suffix}`;
   return bot.getMessageContent(messageId)
-  .then(data => objects.put({ key, body: data }));
+  .then(data => objects.put({ key, body: data, acl: 'public-read'  }));
 }
 
 function fetch(bot, message) {

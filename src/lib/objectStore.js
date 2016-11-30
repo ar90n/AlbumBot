@@ -7,12 +7,11 @@ const isOffline = () => !!process.env.IS_OFFLINE;
 const BUCKET_PREFIX = isOffline() ? 'dev' : process.env.REMOTE_STAGE;
 const BUCKET_NAME = `${BUCKET_PREFIX}-bucket-for-album-bot`;
 
-function put({ key, body }) {
-  const content = {
-    Bucket: BUCKET_NAME,
-    Key: key,
-    Body: body,
-  };
+function put( params ) {
+  const Key = params.key;
+  const Body = params.body;
+  const ACL = params.acl || 'private';
+  const content = { Bucket: BUCKET_NAME, Key, Body, ACL };
 
   return s3('putObject', content).then(() => {
     const url = getObjectUrl(content);
