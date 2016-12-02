@@ -1,5 +1,5 @@
-const statusCodeName = Symbol();
-const bodyName = Symbol();
+const statusCodeName = Symbol('StatusCodeName');
+const bodyName = Symbol('BodyName');
 class ErrorResponse extends Error {
   constructor(statusCode, body) {
     super(body);
