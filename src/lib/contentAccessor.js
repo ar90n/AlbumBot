@@ -7,9 +7,15 @@ function fetchText(message) {
 
 function fetchBlob(bot, message, suffix) {
   const messageId = message.getMessageId();
-  const key = `${messageId}.${suffix}`;
   return bot.getMessageContent(messageId)
-  .then(data => objects.put({ key, body: data, acl: 'public-read'  }));
+  .then((data) => {
+    const body = data;
+    const key = `${messageId}.${suffix}`;
+    const acl = 'public-read';
+    const contentType = 'image/jpeg';
+    const contentEncoding = 'binary';
+    return objects.put({ key, body, acl, contentType, contentEncoding });
+  });
 }
 
 function fetch(bot, message) {

@@ -36,7 +36,7 @@ module.exports = (hasAuth, talkId, funcParams) => {
   return talkStore.get(talkId).then((response) => {
     if (response.Count !== 1) {
       logger.error(`Invalid talkId to get contents: ${talkId}`);
-      throw new ErrorReponse(400, 'Invalid talkId to get contents');
+      throw new ErrorResponse(400, 'Invalid talkId to get contents');
     }
 
     const sourceId = response.Items[0].sourceId;

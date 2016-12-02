@@ -75,6 +75,7 @@ provider:
         - "dynamodb:*"
         - "s3:GetObject"
         - "s3:PutObject"
+        - "s3:PutObjectAcl"
       Resource:
         - "arn:aws:dynamodb:us-east-1:*"
         - "arn:aws:s3::*"

@@ -11,10 +11,10 @@ function create(autoLogin) {
   const timeout = autoLogin ? (1000 * 3600 * 24 * 30) : (1000 * 1800);
   const expireAt = Date.now() + timeout;
   const sessionId = passGenerator.generateToken();
-  const session = { sessionId, timeout, expireAt };
   const hasAuth = true;
+  const session = { sessionId, timeout, expireAt, hasAuth };
 
-  return sessionStore.put({ sessionId, timeout, expireAt, hasAuth }).then(() => Promise.resolve(session));
+  return sessionStore.put(session).then(() => Promise.resolve(session));
 }
 
 function check({ sessionId }) {
