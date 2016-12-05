@@ -91,8 +91,9 @@ function onGroupMessage(callback, token, message) {
   const createdAt = message.getTimestamp();
   const id = message.getMessageId();
   const type = message.getMessageType();
+  const talkId = talkStore.generateId(sourceId);
 
-  contentAccessor.fetch(this, message)
+  contentAccessor.fetch(this, talkId, message)
   .then((content) => {
     const item = Object.assign({}, { sourceId, createdAt, id, type }, content);
     if (isCommand(item)) {
