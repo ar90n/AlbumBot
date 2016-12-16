@@ -7,6 +7,7 @@ const dynamodbOfflineOptions = {
   region: 'localhost',
   endpoint: 'http://localhost:8000',
 };
+
 const client = isOffline() ? new AWS.DynamoDB.DocumentClient(dynamodbOfflineOptions) :
                              new AWS.DynamoDB.DocumentClient();
 

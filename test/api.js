@@ -215,7 +215,8 @@ describe('api', () => {
       expect( body ).to.equal( 'Reject api call without authorization' );
 
       const headers = response.headers;
-      expect( headers ).to.deep.equal( {} );
+      expect( headers['Access-Control-Allow-Origin'] ).to.be.not.null;
+      expect( headers['Access-Control-Allow-Credentials'] ).to.equal( true );
 
       done();
     });
@@ -240,7 +241,8 @@ describe('api', () => {
         expect( body ).to.equal( 'Reject api call without authorization' );
 
         const headers = response.headers;
-        expect( headers ).to.deep.equal( {} );
+        expect( headers['Access-Control-Allow-Origin'] ).to.be.not.null;
+        expect( headers['Access-Control-Allow-Credentials'] ).to.equal( true );
 
         done();
       });
@@ -268,6 +270,8 @@ describe('api', () => {
       const cookieValueStr = headers['Set-Cookie'];
       const cookieValues = cookie.parse(cookieValueStr);
       expect( cookieValues.sessionId ).to.equal( '59h7c4glwzgkzz/TK3MUFh/IxCUSkWP/XnJg/HKI2jY=' );
+      expect( headers['Access-Control-Allow-Origin'] ).to.be.not.null;
+      expect( headers['Access-Control-Allow-Credentials'] ).to.equal( true );
 
       done();
     });
@@ -291,7 +295,8 @@ describe('api', () => {
       expect( body ).to.equal( 'Failed to authorize' );
 
       const headers = response.headers;
-      expect( headers ).to.deep.equal( {} );
+      expect( headers['Access-Control-Allow-Origin'] ).to.be.not.null;
+      expect( headers['Access-Control-Allow-Credentials'] ).to.equal( true );
 
       done();
     });

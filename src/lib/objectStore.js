@@ -17,9 +17,7 @@ function put(params) {
 
   return s3('putObject', content).then(() => {
     const url = getObjectUrl(content);
-    return Promise.resolve({
-      objectUrl: url,
-    });
+    return Promise.resolve({ objectUrl: url });
   });
 }
 

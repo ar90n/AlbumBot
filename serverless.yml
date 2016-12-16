@@ -63,6 +63,13 @@ resources:
       Properties:
         AccessControl: PublicRead
         BucketName: ${self:custom.stage}-bucket-for-album-bot
+    WWWBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        BucketName: ${self:custom.stage}-www-bucket-for-album-bot
+        WebsiteConfiguration:
+          IndexDocument: index.html
 
 provider:
   name: aws
@@ -86,7 +93,7 @@ plugins:
   - serverless-plugin-write-env-vars
   - serverless-mocha-plugin
   - serverless-webpack
-  - serverless-client-s3
+  - serverless-s3-assets
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -106,10 +113,15 @@ custom:
     CHANNEL_ID: ${file(./.env.yml):CHANNEL_ID}
     CHANNEL_SECRET: ${file(./.env.yml):CHANNEL_SECRET}
     CHANNEL_ACCESS_TOKEN: ${file(./.env.yml):CHANNEL_ACCESS_TOKEN}
-    HOSTING_URL: s3-website-${self:provider.region}.amazonaws.com
   webpackIncludeModules: true
-  client:
-    bucketName: ${self:custom.stage}-www-bucket-for-album-bot
+#  s3Assets:
+#    client:
+#      bucket: ${self:custom.stage}-www-bucket-for-album-bot
+#      isPublic: true
+#      cacheTime: 300
+#      contentType: text/html
+#      templates:
+#        cacheTime: 20
 
 functions:
   webhook:
@@ -125,4 +137,5 @@ functions:
       - http:
           method: ANY
           path: api/{proxy+}
+          cors: true
           integration: lambda-proxy

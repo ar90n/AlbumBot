@@ -6,6 +6,11 @@ const logger = require('./lib/logger');
 const api = require('./api/index');
 const strings = require('locutus/php/strings');
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': 'http://localhost:3000',
+  'Access-Control-Allow-Credentials': true,
+};
+
 module.exports.webhook = (event, context, callback) => {
   logger.log(`Event:${JSON.stringify(event)}`);
 
@@ -36,13 +41,14 @@ module.exports.api = (event, context, callback) => {
     const [apiVersion, funcName, talkId, ...pathParams] = event.pathParameters.proxy.split('/');
     return api.exec(hasAuth, httpMethod, apiVersion, funcName, talkId, pathParams, bodyParams)
     .then((response) => {
+      response.headers = Object.assign( response.headers, corsHeaders );
       callback(null, response);
     });
   })
   .catch((error) => {
     logger.error(error);
     const statusCode = error.statusCode || 500;
-    const headers = {};
+    const headers = corsHeaders;
     const body = error.body || 'Internal Server Error';
     const response = { statusCode, headers, body };
     callback(null, response);

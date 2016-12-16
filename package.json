@@ -13,6 +13,7 @@
     "aws-sdk": "^2.6.1",
     "bluebird": "^3.4.6",
     "cookie": "^0.3.1",
+    "image-size": "^0.5.0",
     "line-messaging": "^1.1.8",
     "locutus": "^2.0.5"
   },

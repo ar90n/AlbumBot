@@ -47,9 +47,15 @@ module.exports = (hasAuth, talkId, funcParams) => {
   .then(response => response.Items.map((item) => {
     switch (item.type) {
       case 'image':
-        return { createdAt: item.createdAt, type: item.type, objectUrl: item.objectUrl };
+        return {
+          createdAt: item.createdAt,
+          type: item.type,
+          objectUrl: item.objectUrl,
+          width: item.width,
+          height: item.height,
+        };
       case 'text':
-                  // return { createdAt: item.createdAt, type: item.type, text: item.text };
+        // return { createdAt: item.createdAt, type: item.type, text: item.text };
         return null;
       default:
         return null;

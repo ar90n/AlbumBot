@@ -1,0 +1,10 @@
+{
+  "name": "album_bot_client",
+  "globalDependencies": {
+    "history": "github:DefinitelyTyped/DefinitelyTyped/react-router/history.d.ts#4ba57e605bd71bf7248de65aac0b4f50e3eb1c9e",
+    "material-ui": "registry:dt/material-ui#0.16.0+20161019174653",
+    "react": "github:DefinitelyTyped/DefinitelyTyped/react/react.d.ts#4ba57e605bd71bf7248de65aac0b4f50e3eb1c9e",
+    "react-router": "github:DefinitelyTyped/DefinitelyTyped/react-router/react-router.d.ts#4ba57e605bd71bf7248de65aac0b4f50e3eb1c9e",
+    "react-tap-event-plugin": "registry:dt/react-tap-event-plugin#0.0.0+20160602142434"
+  }
+}

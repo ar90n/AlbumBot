@@ -95,7 +95,7 @@ function onGroupMessage(callback, token, message) {
 
   contentAccessor.fetch(this, talkId, message)
   .then((content) => {
-    const item = Object.assign({}, { sourceId, createdAt, id, type }, content);
+    const item = Object.assign({ sourceId, createdAt, id, type }, content);
     if (isCommand(item)) {
       return evalCommand(this, token, item);
     }
