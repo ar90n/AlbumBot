@@ -5,8 +5,7 @@ const logger = require('../lib/logger');
 const cookie = require('cookie');
 const ErrorResponse = require('../lib/ErrorResponse');
 
-module.exports = (hasAuth, dummy0, dummy1, bodyParams) => {
-  const talkId = bodyParams.talkId;
+module.exports = (hasAuth, dummy0, talkId, dummy1, bodyParams) => {
   const passPhrase = bodyParams.passPhrase;
   const autoLogin = bodyParams.autoLogin;
   const passHash = passGenerator.hash(passPhrase, talkId);
@@ -24,11 +23,12 @@ module.exports = (hasAuth, dummy0, dummy1, bodyParams) => {
       throw new ErrorResponse(401, 'Failed to authorize');
     }
 
-    return sessionAuthorizer.create(autoLogin);
+    return sessionAuthorizer.create(talkId,autoLogin);
   })
   .then(({ sessionId, expireAt }) => {
-    const maxAge = expireAt;
-    const cookieValueStr = cookie.serialize('sessionId', sessionId, { maxAge });
+    const maxAge = expireAt - Date.now();
+    const path='/';
+    const cookieValueStr = cookie.serialize('sessionId', sessionId, { maxAge, path });
     const response = {
       statusCode: 200,
       headers: { 'Set-Cookie': cookieValueStr },

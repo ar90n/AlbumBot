@@ -2,9 +2,32 @@ import * as React from 'react';
 import {observer, inject} from 'mobx-react';
 import {withRouter} from 'react-router';
 import * as Gallery from 'react-photo-gallery/lib/Gallery.js';
+import {CircularProgress} from 'material-ui';
 
 import * as API from '../../api';
 import {AppState, Picture} from '../../AppState';
+
+type itemPosition = 'center' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around';
+const pos: itemPosition = 'center';
+const styles = {
+  gallery: {
+    display: 'flex',
+    height: '100%'
+  },
+  loading: {
+    display: 'flex',
+    justifyContent: pos,
+    alignItems: pos,
+    flexDirection: 'row',
+    width: '100%',
+    height: '100%'
+  },
+  loadingText: {
+    textAlign: 'center',
+    marginLeft: '36px',
+    fontSize: '36px'
+  }
+}
 
 @withRouter
 @inject('appState')
@@ -14,7 +37,7 @@ export class Album extends React.Component<{appState: AppState, params: { talkId
       const talkId = this.props.params.talkId;
       API.albums( talkId ).then( response => {
           if ( !response.ok ) {
-              this.props.router.push(`/auth/${talkId}`);
+              this.props.router.push(`/login/${talkId}`);
               return;
           }
 
@@ -41,11 +64,14 @@ export class Album extends React.Component<{appState: AppState, params: { talkId
 
   public render() {
     const loading = (
-        <div> loading </div>
+        <div style={styles.loading}>
+          <CircularProgress size={64} thickness={5}/>
+          <p style={styles.loadingText} >Loading ...</p>
+        </div>
     );
 
     const gallery = (
-        <div>
+        <div style={styles.gallery}>
           <Gallery photos={this.props.appState.pictures} />
         </div>
     );

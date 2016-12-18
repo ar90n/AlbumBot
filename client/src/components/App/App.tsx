@@ -16,19 +16,6 @@ class Refresh extends React.Component< {}, {} > {
   }
 }
 
-class Logout extends React.Component< {}, {} > {
-  public static muiName: string = 'FlatButton';
-  public render() {
-    return (
-      <FlatButton
-        {...this.props}
-        containerElement={<Link to='logout' />}
-        linkButton={true}
-        label='ログアウト' />
-    );
-  }
-}
-
 const styles = {
   root: {
     display: 'flex',
@@ -47,7 +34,7 @@ export class App extends React.Component<{children: any, appState: AppState}, {}
           <AppBar
             title={this.props.appState.title}
             iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-            iconElementRight={this.props.appState.isLogged ? <Logout /> : <div />}
+            iconElementRight={this.props.appState.isLogged ? <FlatButton linkButton={true} label='ログアウト' /> : <div />}
           />
           {this.props.children}
           <DevTools />

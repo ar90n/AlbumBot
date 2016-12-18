@@ -46,7 +46,7 @@ describe('api', () => {
         .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000144336, id: '5253661356588', type: 'text', text: 'テスト3' } ) )
         .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000136413, id: '5253660727923', type: 'text', text: 'テスト2' } ) )
         .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000129081, id: '5253660145991', type: 'text', text: 'テスト1' } ) )
-        .then( () => sessionStore.put( { sessionId: 'AneQmiU3HGhww9qHRz/91/bo/X5Bnvp5XR6dWe5yOpg=', hasAuth: true, timeout: 1800000, expireAt:9480003084582  } ) )
+        .then( () => sessionStore.put( { sessionId: 'AneQmiU3HGhww9qHRz/91/bo/X5Bnvp5XR6dWe5yOpg=', talkId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', hasAuth: true, timeout: 1800000, expireAt:9480003084582  } ) )
         .then( () => done() );
       });
     });
@@ -235,7 +235,34 @@ describe('api', () => {
         expect(err).to.be.null;
 
         const statusCode = response.statusCode;
-        expect( statusCode  ).to.equal( 401 );
+        expect( statusCode ).to.equal( 401 );
+
+        const body = response.body;
+        expect( body ).to.equal( 'Reject api call without authorization' );
+
+        const headers = response.headers;
+        expect( headers['Access-Control-Allow-Origin'] ).to.be.not.null;
+        expect( headers['Access-Control-Allow-Credentials'] ).to.equal( true );
+
+        done();
+      });
+    });
+  });
+
+  it('reject access when session is not valid', (done) => {
+    const talkId = 'Cc153a8d971a6fbd1e2357d92cdc7348e';
+    const sessionId = 'AneQmiU3HGhww9qHRz/91/bo/X5Bnvp5XR6dWe5yOpg=';
+    const httpMethod = 'GET';
+    const pathParameters = { proxy: `v1/albums/${talkId}` };
+    const body = { };
+    const headers = { Cookie: `sessionId=${sessionId}` };
+
+    sessionStore.update( sessionId, { talkId: 'aaaa' } ).then(() => {
+      wrapped.run({ body, headers, httpMethod, pathParameters }, (err, response) => {
+        expect(err).to.be.null;
+
+        const statusCode = response.statusCode;
+        expect( statusCode ).to.equal( 401 );
 
         const body = response.body;
         expect( body ).to.equal( 'Reject api call without authorization' );
@@ -253,8 +280,8 @@ describe('api', () => {
     const talkId = 'Cc153a8d971a6fbd1e2357d92cdc7348e';
     const passPhrase = encodeURIComponent('力強く汚らわしいコクチョウ');
     const httpMethod = 'POST';
-    const pathParameters = { proxy: 'v1/auth' };
-    const body = `talkId=${talkId}&passPhrase=${passPhrase}`;
+    const pathParameters = { proxy: `v1/login/${talkId}` };
+    const body = `passPhrase=${passPhrase}`;
     const headers = {};
 
     wrapped.run({ body, headers, httpMethod, pathParameters }, (err, response) => {
@@ -281,8 +308,8 @@ describe('api', () => {
     const talkId = 'Cc153a8d971a6fbd1e2357d92cdc7348e';
     const passPhrase = encodeURIComponent('力強く汚らわしいコクチョ');
     const httpMethod = 'POST';
-    const pathParameters = { proxy: 'v1/auth' };
-    const body = `talkId=${talkId}&passPhrase=${passPhrase}`;
+    const pathParameters = { proxy: `v1/login/${talkId}` };
+    const body = `passPhrase=${passPhrase}`;
     const headers = { };
 
     wrapped.run({ body, headers, httpMethod, pathParameters }, (err, response) => {
@@ -302,5 +329,33 @@ describe('api', () => {
     });
   });
 
+  it('logout correctly', (done) => {
+    const talkId = 'Cc153a8d971a6fbd1e2357d92cdc7348e';
+    const sessionId = 'AneQmiU3HGhww9qHRz/91/bo/X5Bnvp5XR6dWe5yOpg=';
+    const httpMethod = 'POST';
+    const pathParameters = { proxy: `v1/logout/${talkId}` };
+    const body = '';
+    const headers = { Cookie: `sessionId=${sessionId}` };
+
+    wrapped.run({ body, headers, httpMethod, pathParameters }, (err, response) => {
+      expect(err).to.be.null;
+
+      const statusCode = response.statusCode;
+      expect( statusCode  ).to.equal( 200 );
+
+      const body = JSON.parse( response.body );
+      expect( body ).to.deep.equal( {} );
+
+      const headers = response.headers;
+      expect( headers['Access-Control-Allow-Origin'] ).to.be.not.null;
+      expect( headers['Access-Control-Allow-Credentials'] ).to.equal( true );
+
+      sessionStore.get( { sessionId } ).then( response => {
+        const session = response.Items[0];
+        expect( session.expireAt ).to.equal( 0 );
+        done();
+      });
+    });
+  });
 });
 

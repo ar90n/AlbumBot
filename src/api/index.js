@@ -1,5 +1,6 @@
 const albums = require('./albums.js');
-const auth = require('./auth.js');
+const login = require('./login.js');
+const logout = require('./logout.js');
 
 const funcs = {
   v1: {
@@ -7,13 +8,14 @@ const funcs = {
       albums,
     },
     post: {
-      auth,
+      login,
+      logout,
     },
   },
 };
 
-function exec(hasAuth, httpMethod, apiVersion, funcName, talkId, funcParams, bodyParams) {
-  return funcs[apiVersion][httpMethod][funcName](hasAuth, talkId, funcParams, bodyParams);
+function exec(hasAuth, sessionId, httpMethod, apiVersion, funcName, talkId, funcParams, bodyParams) {
+  return funcs[apiVersion][httpMethod][funcName](hasAuth, sessionId, talkId, funcParams, bodyParams);
 }
 
 module.exports = {

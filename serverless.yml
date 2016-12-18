@@ -67,7 +67,8 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         AccessControl: PublicRead
-        BucketName: ${self:custom.stage}-www-bucket-for-album-bot
+        #BucketName: ${self:custom.stage}-album-bot.ar90n.net
+        BucketName: album-bot.ar90n.net
         WebsiteConfiguration:
           IndexDocument: index.html
 
@@ -114,14 +115,15 @@ custom:
     CHANNEL_SECRET: ${file(./.env.yml):CHANNEL_SECRET}
     CHANNEL_ACCESS_TOKEN: ${file(./.env.yml):CHANNEL_ACCESS_TOKEN}
   webpackIncludeModules: true
-#  s3Assets:
-#    client:
-#      bucket: ${self:custom.stage}-www-bucket-for-album-bot
-#      isPublic: true
-#      cacheTime: 300
-#      contentType: text/html
-#      templates:
-#        cacheTime: 20
+  s3Assets:
+    client/dist:
+        #bucket: ${self:custom.stage}-album-bot.ar90n.net
+      bucket: album-bot.ar90n.net
+      isPublic: true
+      cacheTime: 300
+      contentType: text/html
+      templates:
+        cacheTime: 20
 
 functions:
   webhook:

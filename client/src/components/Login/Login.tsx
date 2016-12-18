@@ -55,7 +55,7 @@ export class Login extends React.Component<{appState: AppState, params: { talkId
   private sendLoginRequest() {
     if ( this.pass !== null ) {
         const talkId: string = this.props.params.talkId;
-        API.auth( this.props.params.talkId, this.pass ).then( response => {
+        API.login( this.props.params.talkId, this.pass ).then( response => {
             if ( response.ok ) {
                 this.props.appState.authResolve();
                 this.props.appState.login();

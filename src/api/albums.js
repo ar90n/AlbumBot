@@ -27,7 +27,7 @@ function parseParameters(params) {
   return paramQuery;
 }
 
-module.exports = (hasAuth, talkId, funcParams) => {
+module.exports = (hasAuth, dummy0, talkId, funcParams) => {
   if (!hasAuth) {
     logger.log('Reject api call without authorization');
     throw new ErrorResponse(401, 'Reject api call without authorization');
