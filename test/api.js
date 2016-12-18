@@ -46,7 +46,7 @@ describe('api', () => {
         .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000144336, id: '5253661356588', type: 'text', text: 'テスト3' } ) )
         .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000136413, id: '5253660727923', type: 'text', text: 'テスト2' } ) )
         .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000129081, id: '5253660145991', type: 'text', text: 'テスト1' } ) )
-        .then( () => sessionStore.put( { sessionId: 'AneQmiU3HGhww9qHRz/91/bo/X5Bnvp5XR6dWe5yOpg=', talkId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', hasAuth: true, timeout: 1800000, expireAt:9480003084582  } ) )
+        .then( () => sessionStore.put( { sessionId: 'AneQmiU3HGhww9qHRz/91/bo/X5Bnvp5XR6dWe5yOpg=', talkId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', hasAuth: true, maxAge: 1800000, expireAt:9480003084582  } ) )
         .then( () => done() );
       });
     });
@@ -187,8 +187,8 @@ describe('api', () => {
         sessionStore.get( { sessionId } ).then( response => {
           const session = response.Items[0];
           const expireAt = session.expireAt;
-          const timeout = session.timeout;
-          const expectOrgExpireAt = expireAt - timeout;
+          const maxAge = session.maxAge;
+          const expectOrgExpireAt = expireAt - maxAge;
           expect( expectOrgExpireAt ).to.equal( orgExpireAt );
           done();
         });

@@ -2,20 +2,18 @@ const sessionStore = require('./sessionStore');
 const passGenerator = require('./passGenerator');
 const logger = require('./logger');
 
-function updateExpireAt({ sessionId, timeout, expireAt }) {
-  const newExpireAt = expireAt + timeout;
+function updateExpireAt({ sessionId, maxAge, expireAt }) {
+  const newExpireAt = expireAt + maxAge;
   return sessionStore.update(sessionId, { expireAt: newExpireAt });
 }
 
 function create(talkId, autoLogin) {
-  const timeout = autoLogin ? (1000 * 3600 * 24 * 30) : (1000 * 1800);
-  const expireAt = Date.now() + timeout;
+  const maxAge = autoLogin ? (1000 * 3600 * 24 * 30) : (1000 * 1800);
+  const expireAt = Date.now() + maxAge;
   const sessionId = passGenerator.generateToken();
   const hasAuth = true;
-  const session = { sessionId, talkId, timeout, expireAt, hasAuth };
+  const session = { sessionId, talkId, maxAge, expireAt, hasAuth };
 
-  logger.error('create!');
-  logger.error( session );
   return sessionStore.put(session).then(() => Promise.resolve(session));
 }
 
@@ -33,11 +31,10 @@ function check({ sessionId, talkId }) {
     const expireAt = session.expireAt;
     if (expireAt < Date.now()) {
       logger.error(`Session is expired: ${expireAt}`);
-      logger.error( Date.now() );
       return Promise.resolve({ hasAuth: false });
     }
 
-    if ( session.talkId !== talkId ) {
+    if (session.talkId !== talkId) {
       logger.error(`Session is not created for ${talkId}`);
       return Promise.resolve({ hasAuth: false });
     }

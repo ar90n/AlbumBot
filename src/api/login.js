@@ -23,12 +23,13 @@ module.exports = (hasAuth, dummy0, talkId, dummy1, bodyParams) => {
       throw new ErrorResponse(401, 'Failed to authorize');
     }
 
-    return sessionAuthorizer.create(talkId,autoLogin);
+    return sessionAuthorizer.create(talkId, autoLogin);
   })
-  .then(({ sessionId, expireAt }) => {
-    const maxAge = expireAt - Date.now();
-    const path='/';
-    const cookieValueStr = cookie.serialize('sessionId', sessionId, { maxAge, path });
+  .then(({ sessionId, maxAge }) => {
+    const path = '/';
+    const secure = true;
+    const httpOnly = true;
+    const cookieValueStr = cookie.serialize('sessionId', sessionId, { maxAge, path, secure, httpOnly });
     const response = {
       statusCode: 200,
       headers: { 'Set-Cookie': cookieValueStr },

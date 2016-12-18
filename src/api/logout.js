@@ -1,5 +1,6 @@
 const sessionStore = require('../lib/sessionStore');
 const logger = require('../lib/logger');
+const cookie = require('cookie');
 const ErrorResponse = require('../lib/ErrorResponse');
 
 module.exports = (hasAuth, sessionId) => {
@@ -9,9 +10,14 @@ module.exports = (hasAuth, sessionId) => {
   }
 
   return sessionStore.update(sessionId, { expireAt: 0 }).then(() => {
+    const maxAge = 0;
+    const path = '/';
+    const secure = true;
+    const httpOnly = true;
+    const cookieValueStr = cookie.serialize('sessionId', sessionId, { maxAge, path, secure, httpOnly });
     const response = {
       statusCode: 200,
-      headers: {},
+      headers: { 'Set-Cookie': cookieValueStr },
       body: JSON.stringify({}),
     };
     return Promise.resolve(response);
