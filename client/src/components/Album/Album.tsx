@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {observer, inject} from 'mobx-react';
 import {withRouter} from 'react-router';
-import * as Gallery from 'react-photo-gallery/lib/Gallery.js';
+import {Gallery} from './Gallery';
 import {CircularProgress} from 'material-ui';
 
 import * as API from '../../api';
@@ -27,7 +27,7 @@ const styles = {
     marginLeft: '36px',
     fontSize: '36px'
   }
-}
+};
 
 @withRouter
 @inject('appState')
@@ -37,45 +37,41 @@ export class Album extends React.Component<{appState: AppState, params: { talkId
       const talkId = this.props.params.talkId;
       API.albums( talkId ).then( response => {
           if ( !response.ok ) {
-              this.props.router.push(`/login/${talkId}`);
-              return;
+              throw new Error( 'eeeeee' );
           }
 
-          let body = '';
-          const reader = response.body.getReader();
-          const readChunks = ( result ) => {
-              if ( result.done ) {
-                  const newPictures = JSON.parse( body ).map( ( obj ) => {
-                      const src = obj.objectUrl;
-                      const width = Number(obj.width);
-                      const height = Number(obj.height);
-                      return new Picture( src, width, height );
-                  });
-                  this.props.appState.addPictures( newPictures );
-                  return;
-              }
-
-              body += String.fromCharCode.apply( null, result.value );
-              return reader.read().then(readChunks);
-          };
-          reader.read().then( readChunks );
+          return response.json();
+      }).then( (body:any) => {
+          const newPictures = body.map( ( obj ) => {
+              const src = obj.objectUrl;
+              const width = Number(obj.width);
+              const height = Number(obj.height);
+              return new Picture( src, width, height );
+          });
+          this.props.appState.addPictures( newPictures );
+          this.props.appState.authResolve();
+          this.props.appState.login( talkId );
+          return Promise.resolve( true );
+      }).catch( error => {
+          this.props.router.push(`/login/${talkId}`);
+          return Promise.resolve( false );
       });
   }
 
   public render() {
-    const loading = (
+    const loading = () => (
         <div style={styles.loading}>
           <CircularProgress size={64} thickness={5}/>
           <p style={styles.loadingText} >Loading ...</p>
         </div>
     );
 
-    const gallery = (
+    const gallery = () => (
         <div style={styles.gallery}>
-          <Gallery photos={this.props.appState.pictures} />
+          <Gallery appState={this.props.appState} disableLightbox={false} showImageCount={false} backdropClosesModal={false} />
         </div>
     );
 
-    return this.props.appState.pictures === null ? loading : gallery;
+    return this.props.appState.pictures === null ? loading() : gallery();
   }
 }

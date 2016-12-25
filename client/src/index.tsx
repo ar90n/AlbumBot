@@ -10,7 +10,6 @@ import {App, Error, Album, Login} from './components';
 import {AppState} from './AppState';
 
 injectTapEventPlugin();
-
 const appState =  new AppState();
 const root = (
   <MuiThemeProvider>

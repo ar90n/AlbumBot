@@ -55,10 +55,10 @@ export class Login extends React.Component<{appState: AppState, params: { talkId
   private sendLoginRequest() {
     if ( this.pass !== null ) {
         const talkId: string = this.props.params.talkId;
-        API.login( this.props.params.talkId, this.pass ).then( response => {
+        API.login( talkId, this.pass ).then( response => {
             if ( response.ok ) {
                 this.props.appState.authResolve();
-                this.props.appState.login();
+                this.props.appState.login( talkId );
                 this.props.router.push(`/album/${talkId}`);
             } else {
                 this.props.appState.authReject();

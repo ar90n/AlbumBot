@@ -17,7 +17,6 @@ export class Error extends React.Component<{}, {}> {
       <div style={style}>
         <p>不正なアルバムへのリクエストです．</p>
         <p>URLを確認の上，再度アクセスをお願いします．</p>
-        <Link to='/login/1234' >login</Link>
       </div>
     );
   }

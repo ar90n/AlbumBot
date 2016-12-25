@@ -58,19 +58,15 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    WWWBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.stage}album-bot.ar90n.net
     BlobBucket:
       Type: AWS::S3::Bucket
       Properties:
         AccessControl: PublicRead
-        BucketName: ${self:custom.stage}-bucket-for-album-bot
-    WWWBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        AccessControl: PublicRead
-        #BucketName: ${self:custom.stage}-album-bot.ar90n.net
-        BucketName: album-bot.ar90n.net
-        WebsiteConfiguration:
-          IndexDocument: index.html
+        BucketName: ${self:custom.stage}bucket-for-album-bot
 
 provider:
   name: aws
@@ -107,7 +103,7 @@ custom:
   s3:
     port: 8001
     buckets:
-      - ${self:custom.stage}-bucket-for-album-bot
+      - bucket-for-album-bot
     directory: /tmp
   writeEnvVars:
     REMOTE_STAGE: ${self:custom.stage}
@@ -117,9 +113,7 @@ custom:
   webpackIncludeModules: true
   s3Assets:
     client/dist:
-        #bucket: ${self:custom.stage}-album-bot.ar90n.net
-      bucket: album-bot.ar90n.net
-      isPublic: true
+      bucket: ${self:custom.stage}album-bot.ar90n.net
       cacheTime: 300
       contentType: text/html
       templates:

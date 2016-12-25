@@ -1,52 +1,56 @@
-var path = require('path');
-var webpack = require('webpack');
+const path = require('path');
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  context: __dirname + '/src',
+  context: `${__dirname}/src`,
   entry: {
-      typescript: './index.tsx',
-      html: './index.html'
+    typescript: './index.tsx',
   },
 
   output: {
-      path: __dirname + '/dist',
-      publicPath: 'http://localhost:3000/',
-      filename: 'bundle.js'
+    path: `${__dirname}/dist`,
+    publicPath: 'http://localhost:3000/',
+    filename: 'bundle.js',
   },
 
   // Configuration for dev server
   devServer: {
-      contentBase: 'dist',
-      port: 3000
+    contentBase: 'dist',
+    port: 3000,
   },
 
   devtool: 'eval',
   plugins: [
+    new CopyWebpackPlugin([{ from: './index.html', to: '../dist/index.html' }]),
+    new webpack.DefinePlugin({
+      'process.env.API_HOST': JSON.stringify(process.env.API_HOST || 'api.dev.album-bot.ar90n.net'),
+    }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
   ],
   resolve: {
-    extensions: ['', '.js', '.ts', '.tsx', '.json']
+    extensions: ['.js', '.ts', '.tsx', '.json'],
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.css$/,
-        loader: "style!css"
+        loader: 'style-loader!css-loader',
       },
       {
         test: /\.json$/,
-        loaders: ['json-loader']
+        loaders: ['json-loader'],
       },
       {
-          test: /\.html$/,
-          loader: 'file?name=[path][name].[ext]'
+        test: /\.html$/,
+        loader: 'file-loader?name=[path][name].[ext]',
       },
       {
         test: /\.tsx?$/,
-        loaders: ['react-hot/webpack', 'ts-loader'],
-        include: path.join(__dirname, 'src')
-      }
-    ]
-  }
+        loaders: ['react-hot-loader/webpack', 'ts-loader'],
+        include: path.join(__dirname, 'src'),
+      },
+    ],
+  },
 };

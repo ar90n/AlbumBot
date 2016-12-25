@@ -7,8 +7,8 @@ const api = require('./api/index');
 const strings = require('locutus/php/strings');
 
 const corsHeaders = {
-  //'Access-Control-Allow-Origin': 'http://localhost:3000',
-  'Access-Control-Allow-Origin': 'https://album-bot.ar90n.net',
+  'Access-Control-Allow-Origin': 'http://localhost:3000',
+  //'Access-Control-Allow-Origin': `https://${process.env.REMOTE_STAGE}.album-bot.ar90n.net`,
   'Access-Control-Allow-Credentials': true,
 };
 
@@ -41,13 +41,12 @@ module.exports.api = (event, context, callback) => {
   const bodyParams = {};
   strings.parse_str(event.body, bodyParams);
   const [apiVersion, funcName, talkId, ...pathParams] = event.pathParameters.proxy.split('/');
-  sessionAuthorizer.check({ sessionId, talkId }).then(({ hasAuth }) => {
-    return api.exec(hasAuth, sessionId, httpMethod, apiVersion, funcName, talkId, pathParams, bodyParams)
+  sessionAuthorizer.check({ sessionId, talkId }).then(({ hasAuth }) => api.exec(hasAuth, sessionId, httpMethod, apiVersion, funcName, talkId, pathParams, bodyParams)
     .then((response) => {
-      response.headers = Object.assign( response.headers, corsHeaders );
+      response.headers = Object.assign(response.headers, corsHeaders);
+      logger.log(`Response:${JSON.stringify(response)}`);
       callback(null, response);
-    });
-  })
+    }))
   .catch((error) => {
     logger.error(error);
     const statusCode = error.statusCode || 500;

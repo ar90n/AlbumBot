@@ -2,10 +2,7 @@ const Promise = require('bluebird');
 const s3 = require('./s3').s3;
 const getObjectUrl = require('./s3').getObjectUrl;
 
-const isOffline = () => !!process.env.IS_OFFLINE;
-
-const BUCKET_PREFIX = isOffline() ? 'dev' : process.env.REMOTE_STAGE;
-const BUCKET_NAME = `${BUCKET_PREFIX}-bucket-for-album-bot`;
+const BUCKET_NAME = 'bucket-for-album-bot';
 
 function put(params) {
   const Key = params.key;

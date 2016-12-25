@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {observer, inject} from 'mobx-react';
-import DevTools from 'mobx-react-devtools';
-import {Link} from 'react-router';
+//import DevTools from 'mobx-react-devtools';
+import {withRouter} from 'react-router';
+import * as API from '../../api';
 import {AppState} from '../../AppState';
 
 import {AppBar, IconButton, FlatButton } from 'material-ui';
@@ -25,19 +26,32 @@ const styles = {
   }
 };
 
+@withRouter
 @inject('appState')
 @observer
-export class App extends React.Component<{children: any, appState: AppState}, {}> {
+export class App extends React.Component<{children: any, appState: AppState, router: any}, {}> {
+  private sendLogoutRequest() {
+    if( this.props.appState.isLoggedTalkId !== null ) {
+        const talkId: string = this.props.appState.isLoggedTalkId;
+        API.logout( talkId ).then( response => {
+            if ( response.ok ) {
+                console.log( 'lougout ok' );
+                this.props.appState.logout();
+                this.props.router.push(`/login/${talkId}`);
+            }
+        });
+    }
+  }
+
   public render() {
     return (
         <div style={styles.root}>
           <AppBar
             title={this.props.appState.title}
-            iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-            iconElementRight={this.props.appState.isLogged ? <FlatButton linkButton={true} label='ログアウト' /> : <div />}
+            iconElementLeft={<div />}
+            iconElementRight={this.props.appState.isLoggedTalkId ? <FlatButton label='ログアウト' onClick={()=>this.sendLogoutRequest()} /> : <div />}
           />
           {this.props.children}
-          <DevTools />
         </div>
       );
     }

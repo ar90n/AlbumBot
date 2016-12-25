@@ -1,9 +1,6 @@
 const db = require('./dynamodb').db;
 
-const isOffline = () => !!process.env.IS_OFFLINE;
-
-const TABLE_PREFIX = isOffline() ? '' : process.env.REMOTE_STAGE;
-const TABLE_NAME = `${TABLE_PREFIX}itemStore`;
+const TABLE_NAME = 'itemStore';
 
 function getByRange({ sourceId, limit, beginCreatedAt, endCreatedAt }) {
   if (limit === 0) {

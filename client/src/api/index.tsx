@@ -1,7 +1,9 @@
 import * as url from 'locutus/php/url';
 import 'whatwg-fetch';
 
-const HOST_URL = 'https://keryptl3t1.execute-api.us-east-1.amazonaws.com/dev/api';
+declare var process: any;
+
+const API_HOST = process.env.API_HOST;
 
 export function login( talkId: string, passPhrase: string ) {
     const body = url.http_build_query( { passPhrase });
@@ -9,7 +11,8 @@ export function login( talkId: string, passPhrase: string ) {
         'Content-Type': 'application/x-www-form-urlencoded'
     };
 
-    return fetch( `${HOST_URL}/v1/login/${talkId}`, {
+    const resourceUrl = `https://${API_HOST}/api/v1/login/${talkId}`;
+    return fetch( resourceUrl, {
         method: 'POST',
         body,
         headers,
@@ -19,12 +22,13 @@ export function login( talkId: string, passPhrase: string ) {
 }
 
 export function logout( talkId: string ) {
-    const body = "";
+    const body = '';
     const headers = {
         'Content-Type': 'application/x-www-form-urlencoded'
     };
 
-    return fetch( `${HOST_URL}/v1/logout/${talkId}`, {
+    const resourceUrl = `https://${API_HOST}/api/v1/logout/${talkId}`;
+    return fetch( resourceUrl, {
         method: 'POST',
         body,
         headers,
@@ -34,7 +38,8 @@ export function logout( talkId: string ) {
 }
 
 export function albums( talkId: string ) {
-    return fetch( `${HOST_URL}/v1/albums/${talkId}`, {
+    const resourceUrl = `https://${API_HOST}/api/v1/albums/${talkId}`;
+    return fetch( resourceUrl, {
         method: 'GET',
         mode: 'cors',
         credentials: 'include'

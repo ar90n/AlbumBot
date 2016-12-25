@@ -1,9 +1,6 @@
 const db = require('./dynamodb').db;
 
-const isOffline = () => !!process.env.IS_OFFLINE;
-
-const TABLE_PREFIX = isOffline() ? '' : process.env.REMOTE_STAGE;
-const TABLE_NAME = `${TABLE_PREFIX}sessionStore`;
+const TABLE_NAME = 'sessionStore';
 
 function get({ sessionId }) {
   return db('query', {

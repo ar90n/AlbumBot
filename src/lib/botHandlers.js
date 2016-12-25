@@ -21,11 +21,11 @@ function getReplyPageUrlMessage(pageUrl) {
 }
 
 function getOverviewMessage() {
-  return 'ご登録ありがとうございます．アルバムBot for Lineはグループに投稿された写真・動画を保存し，アルバムページを作成します．';
+  return 'ご登録ありがとうございます．アルバムBotはグループに投稿された写真・動画を保存し，アルバムページを作成します．';
 }
 
 function getJoinMessage(pageUrl, passphrase) {
-  return `ご登録ありがとうございます．アルバムBot for Lineは投稿された写真・動画を保存し，アルバムページを作成します．
+  return `ご登録ありがとうございます．アルバムBotは投稿された写真を保存し，アルバムページを作成します．
 
 アルバムページのURLと合言葉は以下のとおりです．
 URL：${pageUrl}
@@ -35,7 +35,9 @@ URL：${pageUrl}
 }
 
 function createPageUrl(talkId) {
-  return `http://album-bot.ar90n.net/album/${talkId}`;
+  const remoteStage = process.env.REMOTE_STAGE;
+  const remoteHost = (remoteStage === 'prod') ? 'album-bot.ar90n.net' : `${remoteStage}.album-bot.ar90n.net`;
+  return `https:/${remoteHost}/album/${talkId}`;
 }
 
 function isCommand({ type, text }) {
