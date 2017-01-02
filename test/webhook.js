@@ -97,6 +97,7 @@ describe('webhook', () => {
     });
   });
 
+  /* // to s3hook
   it('add image message item into db when image message is received', (done) => {
     const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479860;
@@ -143,7 +144,9 @@ describe('webhook', () => {
       });
     });
   });
+  */
 
+  /* // to s3 hook
   it('add video message item into db when video message is received', (done) => {
     const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
     const createdAt = 1462629479861;
@@ -189,6 +192,7 @@ describe('webhook', () => {
       });
     });
   });
+  */
 
   it('ignore audio message', (done) => {
     const sourceId = 'U206d25c2ea6bd87c17655609a1c37cb8';
@@ -415,7 +419,7 @@ describe('webhook', () => {
 
     wrapped.run({ body, headers }, (err, {talkId, passHash, updateToken}) => {
       expect(err).to.be.null;
-      talkStore.get(talkId).then((res) => {
+      talkStore.get({ talkId }).then((res) => {
         const count = res.Count;
         expect(count).to.equal(1);
 
@@ -426,6 +430,7 @@ describe('webhook', () => {
           passHash,
           updateToken,
           createdAt,
+          updateCount: 0,
         };
         expect(talk).to.deep.equal(expectedTalk);
 
@@ -559,13 +564,14 @@ describe('webhook', () => {
       sourceId,
       createdAt,
       passHash,
-      updateToken
+      updateToken,
+      updateCount: 0,
     }).then( ()=>{
       wrapped.run({ body, headers }, (err, response) => {
         expect(err).to.be.null;
         expect(response.type).to.equal('updatePass');
         expect(response.passHash).to.equal(passHash);
-        talkStore.get( talkId ).then( talkResponse => {
+        talkStore.get( { talkId } ).then( talkResponse => {
           const count = talkResponse.Count;
           expect(count).to.equal(1);
 
@@ -611,11 +617,12 @@ describe('webhook', () => {
       sourceId,
       createdAt,
       passHash,
-      updateToken
+      updateToken,
+      updateCount: 0,
     }).then( ()=>{
       wrapped.run({ body, headers }, (err, response) => {
         expect(err).to.be.null;
-        talkStore.get(talkId).then( (talkResponse) => {
+        talkStore.get( { talkId } ).then( (talkResponse) => {
           const count = talkResponse.Count;
           expect(count).to.equal(1);
 
@@ -664,11 +671,12 @@ describe('webhook', () => {
       sourceId,
       createdAt,
       passHash,
-      updateToken
+      updateToken,
+      updateCount: 0,
     }).then( ()=>{
       wrapped.run({ body, headers }, (err, response) => {
         expect(err).to.be.null;
-        talkStore.get(talkId).then( (talkResponse) => {
+        talkStore.get( { talkId } ).then( (talkResponse) => {
           const count = talkResponse.Count;
           expect(count).to.equal(1);
 
@@ -717,7 +725,8 @@ describe('webhook', () => {
       sourceId,
       createdAt,
       passHash,
-      updateToken
+      updateToken,
+      updateCount: 0,
     }).then( ()=>{
       wrapped.run({ body, headers }, (err, response) => {
         expect(err).to.be.not.null;

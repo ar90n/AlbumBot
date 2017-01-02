@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {observer, inject} from 'mobx-react';
 import * as Lightbox from 'react-images';
-import {AppState,Picture} from '../../AppState'
+import {AppState} from '../../AppState';
 
 // Gallery image style
 const style = {
@@ -9,7 +9,7 @@ const style = {
     margin: 2,
     backgroundColor:'#e3e3e3',
     float: 'left'
-}
+};
 
 @inject('appState')
 @observer
@@ -60,22 +60,24 @@ export class Gallery extends React.Component< { appState: AppState, disableLight
                           (containerWidth >= 480)  ? 2 :
                           1;
         let photoPreviewNodes = [];
-        var contWidth = containerWidth - (rowLimit * 4); /* 4px for margin around each image*/
+        let contWidth = containerWidth - (rowLimit * 4); /* 4px for margin around each image*/
         contWidth = Math.floor(contWidth - 2); // add some padding to prevent layout prob
-        var remainder = photos.length % rowLimit;
+        let remainder = photos.length % rowLimit;
+        let lastRowWidth = -1;
+        let lastRowIndex = -1;
         if (remainder) { // there are fewer than rowLimit photos in last row
-            var lastRowWidth = Math.floor(containerWidth - (remainder * 4) - 2);
-            var lastRowIndex = photos.length - remainder;
+            lastRowWidth = Math.floor(containerWidth - (remainder * 4) - 2);
+            lastRowIndex = photos.length - remainder;
         }
-        var lightboxImages = [];
-        for (var i=0;i<photos.length;i+=rowLimit) {
-            var rowItems = [];
+        let lightboxImages = [];
+        for (let i=0;i<photos.length;i+=rowLimit) {
+            let rowItems = [];
             // loop thru each set of rowLimit num
             // eg. if rowLimit is 3 it will  loop thru 0,1,2, then 3,4,5 to perform calculations for the particular set
-            var aspectRatio=0,
+            let aspectRatio=0,
                 totalAr=0,
                 commonHeight = 0;
-            for (var j=i; j<i+rowLimit; j++){
+            for (let j=i; j<i+rowLimit; j++){
                 if (j == photos.length){
                     break;
                 }
@@ -87,11 +89,11 @@ export class Gallery extends React.Component< { appState: AppState, disableLight
                 commonHeight = contWidth / totalAr;
             }
             // run thru the same set of items again to give the common height
-            for (var k=i; k<i+rowLimit; k++){
+            for (let k=i; k<i+rowLimit; k++){
                 if (k == photos.length){
                     break;
                 }
-                var src = photos[k].src;
+                let src = photos[k].src;
 
                 if (this.props.disableLightbox){
                     photoPreviewNodes.push(
@@ -102,7 +104,7 @@ export class Gallery extends React.Component< { appState: AppState, disableLight
                 }
                 else{
                     lightboxImages.push(photos[k].lightboxImage);
-                    const kk = k
+                    const kk = k;
                     photoPreviewNodes.push(
                         <div key={k} style={style}>
                           <a href="#" className={String(k)} onClick={(e) => this.openLightbox(kk,e)}>

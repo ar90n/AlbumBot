@@ -7,12 +7,12 @@ export class Picture {
     public aspectRatio: number;
     public lightboxImage: { src: string };
 
-    constructor( src: string, width: number, height: number ) {
+    constructor( src: string, width: number, height: number, lightboxSrc: string ) {
       this.src = src;
       this.width = width;
       this.height = height;
       this.aspectRatio = width / height;
-      this.lightboxImage = { src };
+      this.lightboxImage = { src: lightboxSrc };
     }
 }
 
@@ -20,7 +20,10 @@ export class AppState {
     @observable public title: string = 'アルバムBot';
     @observable public isLoggedTalkId?: string = null;
     @observable public isAuthRejected: boolean = false;
+    @observable public isFirstMeasure: boolean = true;
+    @observable public isInitialLoadComplete: boolean = false;
     @observable public pictures?: Picture[] = null;
+    @observable public lastEvaluatedCreatedAt?: number = null;
     @observable public currentImage: number = 0;
     @observable public galleryWidth: number = 0;
     @observable public lightboxIsOpen: boolean = false;
@@ -33,6 +36,14 @@ export class AppState {
     @action
     public logout(): void {
       this.isLoggedTalkId = null;
+      this.isAuthRejected = false;
+      this.isFirstMeasure = true;
+      this.isInitialLoadComplete = false;
+      this.pictures = null;
+      this.lastEvaluatedCreatedAt = null;
+      this.currentImage = 0;
+      this.galleryWidth = 0;
+      this.lightboxIsOpen = false;
     }
 
     @action
@@ -46,12 +57,13 @@ export class AppState {
     }
 
     @action
-    public addPictures( newPictures: Picture[] ): void {
+    public addPictures( newPictures: Picture[], lastEvaluatedCreatedAt?: number ): void {
         if ( this.pictures === null ) {
             this.pictures = [];
         }
 
         this.pictures = this.pictures.concat( newPictures );
+        this.lastEvaluatedCreatedAt = lastEvaluatedCreatedAt;
     }
 
     @action
@@ -79,5 +91,15 @@ export class AppState {
     public closeLightbox(): void {
         this.currentImage = 0;
         this.lightboxIsOpen = false;
+    }
+
+    @action
+    public completeInitialLoad(): void {
+        this.isInitialLoadComplete = true;
+    }
+
+    @action
+    public completeFirstMeasure(): void {
+        this.isFirstMeasure = false;
     }
 }

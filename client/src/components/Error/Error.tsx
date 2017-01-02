@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {Link} from 'react-router';
 
 type itemPosition = 'center' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around';
 const pos: itemPosition = 'center';

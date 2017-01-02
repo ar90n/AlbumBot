@@ -10,7 +10,7 @@ module.exports = (hasAuth, dummy0, talkId, dummy1, bodyParams) => {
   const autoLogin = bodyParams.autoLogin;
   const passHash = passGenerator.hash(passPhrase, talkId);
 
-  return talkStore.get(talkId).then((response) => {
+  return talkStore.get({talkId}).then((response) => {
     if (response.Count !== 1) {
       logger.error(`Invalid talkId to authorize: ${talkId}`);
       throw new ErrorResponse(401, 'Failed to authorize');

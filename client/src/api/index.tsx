@@ -4,6 +4,7 @@ import 'whatwg-fetch';
 declare var process: any;
 
 const API_HOST = process.env.API_HOST;
+const PICTURES_PER_PAGE = 12;
 
 export function login( talkId: string, passPhrase: string ) {
     const body = url.http_build_query( { passPhrase });
@@ -37,8 +38,12 @@ export function logout( talkId: string ) {
     });
 }
 
-export function albums( talkId: string ) {
-    const resourceUrl = `https://${API_HOST}/api/v1/albums/${talkId}`;
+export function albums( talkId: string, lastEvaluatedCreatedAt: number ) {
+    let resourceUrl = `https://${API_HOST}/api/v1/albums/${talkId}/limit/${PICTURES_PER_PAGE}`;
+    if( !!lastEvaluatedCreatedAt ) {
+        resourceUrl = `${resourceUrl}/lastEvaluatedCreatedAt/${lastEvaluatedCreatedAt}`;
+    }
+
     return fetch( resourceUrl, {
         method: 'GET',
         mode: 'cors',

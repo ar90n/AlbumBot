@@ -5,8 +5,7 @@ import {withRouter} from 'react-router';
 import * as API from '../../api';
 import {AppState} from '../../AppState';
 
-import {AppBar, IconButton, FlatButton } from 'material-ui';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import {AppBar, FlatButton } from 'material-ui';
 
 class Refresh extends React.Component< {}, {} > {
   public static muiName: string  = 'FlatButton';
@@ -35,8 +34,6 @@ export class App extends React.Component<{children: any, appState: AppState, rou
         const talkId: string = this.props.appState.isLoggedTalkId;
         API.logout( talkId ).then( response => {
             if ( response.ok ) {
-                console.log( 'lougout ok' );
-                this.props.appState.logout();
                 this.props.router.push(`/login/${talkId}`);
             }
         });

@@ -18,7 +18,7 @@ function getObjectUrl({ Bucket, Key }) {
 
 function s3(method, content) {
   const Bucket = `${BUCKET_PREFIX}${content.Bucket}`;
-  const modContent = Object.assign(content, { Bucket });
+  const modContent = Object.assign({}, content, { Bucket });
   return Promise.fromCallback(cb => client[method](modContent, cb));
 }
 

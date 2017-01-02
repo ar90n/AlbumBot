@@ -14,7 +14,7 @@ const client = isOffline() ? new AWS.DynamoDB.DocumentClient(dynamodbOfflineOpti
 
 function db(method, params) {
   const TableName = `${TABLE_PREFIX}${params.TableName}`;
-  const modParams = Object.assign(params, { TableName });
+  const modParams = Object.assign({}, params, { TableName });
   return Promise.fromCallback(cb => client[method](modParams, cb));
 }
 

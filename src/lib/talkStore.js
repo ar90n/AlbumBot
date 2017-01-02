@@ -1,12 +1,14 @@
 const db = require('./dynamodb').db;
+const passGenerator = require('./passGenerator');
 
 const TABLE_NAME = 'talkStore';
+const SALT_ID = '@LBUM_B0T';
 
 function generateId(sourceId) {
   return sourceId;
 }
 
-function get(talkId) {
+function get( { talkId }) {
   return db('query', {
     TableName: TABLE_NAME,
     KeyConditionExpression: '#talkId = :talkId',
@@ -33,21 +35,27 @@ function put(item) {
 }
 
 function update(talkId, item) {
-  const updateExpression = Object.keys(item).reduce((prev, curr, index) => {
-    const prefix = (index === 0) ? 'set' : ',';
-    return `${prev} ${prefix} ${curr} = :${curr}`;
-  }, '');
-  const expressionAttributeValues = Object.keys(item).reduce((prev, curr) => {
-    const key = `:${curr}`;
-    return Object.assign(prev, { [key]: item[curr] });
-  }, {});
+  return get({talkId}).then((response) => {
+    if (response.Count !== 1) {
+      throw new Error(`Invalid talkId for update:${talkId}`);
+    }
 
-  return db('update', {
-    TableName: TABLE_NAME,
-    Key: { talkId },
-    UpdateExpression: updateExpression,
-    ExpressionAttributeValues: expressionAttributeValues,
-    ReturnValues: 'UPDATED_NEW',
+    const expectedItem = response.Items[0];
+    const expectedUpdateCount = expectedItem.updateCount;
+    const UpdateExpression = Object.keys(item).reduce((prev, curr) => `${prev} , ${curr} = :${curr}`, 'set #updateCount = #updateCount + :num');
+    const ExpressionAttributeNames = { '#updateCount': 'updateCount' };
+    const ExpressionAttributeValues = Object.keys(item).reduce((prev, curr) => Object.assign({}, prev, { [`:${curr}`]: item[curr] }), { ':num': 1, ':expectedUpdateCount': expectedUpdateCount });
+    const ConditionExpression = '#updateCount = :expectedUpdateCount';
+
+    return db('update', {
+      TableName: TABLE_NAME,
+      Key: { talkId },
+      UpdateExpression,
+      ExpressionAttributeNames,
+      ExpressionAttributeValues,
+      ConditionExpression,
+      ReturnValues: 'UPDATED_NEW',
+    });
   });
 }
 

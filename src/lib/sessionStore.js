@@ -25,21 +25,27 @@ function put(item) {
 }
 
 function update(sessionId, item) {
-  const updateExpression = Object.keys(item).reduce((prev, curr, index) => {
-    const prefix = (index === 0) ? 'set' : ',';
-    return `${prev} ${prefix} ${curr} = :${curr}`;
-  }, '');
-  const expressionAttributeValues = Object.keys(item).reduce((prev, curr) => {
-    const key = `:${curr}`;
-    return Object.assign(prev, { [key]: item[curr] });
-  }, {});
+  return get({ sessionId }).then((response) => {
+    if (response.Count !== 1) {
+      throw new Error(`Invalid sessionId for update:${sessionId}`);
+    }
 
-  return db('update', {
-    TableName: TABLE_NAME,
-    Key: { sessionId },
-    UpdateExpression: updateExpression,
-    ExpressionAttributeValues: expressionAttributeValues,
-    ReturnValues: 'UPDATED_NEW',
+    const expectedItem = response.Items[0];
+    const expectedUpdateCount = expectedItem.updateCount;
+    const UpdateExpression = Object.keys(item).reduce((prev, curr) => `${prev} , ${curr} = :${curr}`, 'set #updateCount = #updateCount + :num');
+    const ExpressionAttributeNames = { '#updateCount': 'updateCount' };
+    const ExpressionAttributeValues = Object.keys(item).reduce((prev, curr) => Object.assign({}, prev, { [`:${curr}`]: item[curr] }), { ':num': 1, ':expectedUpdateCount': expectedUpdateCount });
+    const ConditionExpression = '#updateCount = :expectedUpdateCount';
+
+    return db('update', {
+      TableName: TABLE_NAME,
+      Key: { sessionId },
+      UpdateExpression,
+      ExpressionAttributeNames,
+      ExpressionAttributeValues,
+      ConditionExpression,
+      ReturnValues: 'UPDATED_NEW',
+    });
   });
 }
 

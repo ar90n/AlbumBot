@@ -62,11 +62,11 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.stage}album-bot.ar90n.net
-    BlobBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        AccessControl: PublicRead
-        BucketName: ${self:custom.stage}bucket-for-album-bot
+#    BlobBucket:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        AccessControl: PublicRead
+#        BucketName: ${self:custom.stage}bucket-for-album-bot
 
 provider:
   name: aws
@@ -135,3 +135,27 @@ functions:
           path: api/{proxy+}
           cors: true
           integration: lambda-proxy
+  resize:
+    handler: src/handler.s3hookResize
+    events:
+      - s3:
+          bucket: ${self:custom.stage}bucket-for-album-bot
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: photo/original/
+  createItem:
+    handler: src/handler.s3hookCreateImageItem
+    events:
+      - s3:
+          bucket: ${self:custom.stage}bucket-for-album-bot
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: photo/preview/
+  createVideoItem:
+    handler: src/handler.s3hookCreateVideoItem
+    events:
+      - s3:
+          bucket: ${self:custom.stage}bucket-for-album-bot
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: video/

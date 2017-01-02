@@ -18,7 +18,13 @@ module.exports = {
       }
     ]
   },
-  externals:[ nodeExternals() ],
+  externals:[
+      nodeExternals(),
+      {
+          'aws-ask': true,
+          'imagemagick': true
+      }
+  ],
   plugins: [
     new Dotenv({ path: './.env', safe: false })
   ]

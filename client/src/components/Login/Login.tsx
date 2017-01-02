@@ -21,7 +21,7 @@ const styles = {
         fontSize: '36px',
     },
     form: {
-        width: '40%',
+        width: '70%',
         padding: 20,
         margin: 20,
         textAlign: 'center',
@@ -65,6 +65,10 @@ export class Login extends React.Component<{appState: AppState, params: { talkId
             }
         });
     }
+  }
+
+  public componentDidMount() {
+    this.props.appState.logout();
   }
 
   public render() {

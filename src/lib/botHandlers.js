@@ -97,6 +97,10 @@ function onGroupMessage(callback, token, message) {
 
   contentAccessor.fetch(this, talkId, message)
   .then((content) => {
+    if ((type === 'image') || (type === 'video')) {
+      return Promise.resolve({});
+    }
+
     const item = Object.assign({ sourceId, createdAt, id, type }, content);
     if (isCommand(item)) {
       return evalCommand(this, token, item);
@@ -133,7 +137,8 @@ function onInvitedToGroup(callback, token, message) {
   const defaultPassphrase = passGenerator.generatePass();
   const passHash = passGenerator.hash(defaultPassphrase, talkId);
   const updateToken = passGenerator.generateToken();
-  talkStore.put({ talkId, sourceId, createdAt, passHash, updateToken })
+  const updateCount = 0;
+  talkStore.put({ talkId, sourceId, createdAt, passHash, updateToken, updateCount })
   .then(() => {
     const pageUrl = createPageUrl(talkId);
     const initialMessage = getJoinMessage(pageUrl, defaultPassphrase);
@@ -156,7 +161,7 @@ function onPostback(callback, token, message) {
   const talkId = talkStore.generateId(sourceId);
   const postbackData = JSON.parse(message.getPostbackData());
 
-  talkStore.get(talkId).then((response) => {
+  talkStore.get({talkId}).then((response) => {
     if (response.Count !== 1) {
       throw new Error(`Invalid talkId to update passHash: ${talkId}`);
     }

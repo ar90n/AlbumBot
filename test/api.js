@@ -37,16 +37,16 @@ describe('api', () => {
   beforeEach((done) => {
     itemStore.clear().then(() => {
       talkStore.clear().then(() => {
-        talkStore.put( {talkId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000084582, passHash: 'xoe9gjviF7OPkoLm+SmS2/TbrLnFW1W57QXjf/d+/dg=', updateToken:'UpbWrRj5HBHWFyuhtt/mD/bo/X5Bnvp5XR6dWe5yOpg=', sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e' } )
-        .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000170151, id: '5253663423153', type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663423153' } ) )
-        .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000169725, id: '5253663390733', type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663390733' } ) )
-        .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000169331, id: '5253663356302', type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663356302' } ) )
-        .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000169062, id: '5253663336326', type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663336326' } ) )
+        talkStore.put( {talkId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000084582, passHash: 'xoe9gjviF7OPkoLm+SmS2/TbrLnFW1W57QXjf/d+/dg=', updateToken:'UpbWrRj5HBHWFyuhtt/mD/bo/X5Bnvp5XR6dWe5yOpg=', sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', updateCount: 0 } )
+        .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000170151, id: '5253663423153', type: 'image', previewUrl: 'https://dev-bucket-for-album-bot/5253663423153', previewWidth: 1, previewHeight:1, originalUrl:'https://dev-bucket-for-album-bot/5253663423153' } ) )
+        .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000169725, id: '5253663390733', type: 'image', previewUrl: 'https://dev-bucket-for-album-bot/5253663390733', previewWidth: 1, previewHeight:1, originalUrl:'https://dev-bucket-for-album-bot/5253663390733' } ) )
+        .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000169331, id: '5253663356302', type: 'image', previewUrl: 'https://dev-bucket-for-album-bot/5253663356302', previewWidth: 1, previewHeight:1, originalUrl:'https://dev-bucket-for-album-bot/5253663356302' } ) )
+        .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000169062, id: '5253663336326', type: 'image', previewUrl: 'https://dev-bucket-for-album-bot/5253663336326', previewWidth: 1, previewHeight:1, originalUrl:'https://dev-bucket-for-album-bot/5253663336326' } ) )
         .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000151681, id: '5253661949391', type: 'text', text: 'テスト4' } ) )
         .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000144336, id: '5253661356588', type: 'text', text: 'テスト3' } ) )
         .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000136413, id: '5253660727923', type: 'text', text: 'テスト2' } ) )
         .then( () => itemStore.put( { sourceId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', createdAt: 1480000129081, id: '5253660145991', type: 'text', text: 'テスト1' } ) )
-        .then( () => sessionStore.put( { sessionId: 'AneQmiU3HGhww9qHRz/91/bo/X5Bnvp5XR6dWe5yOpg=', talkId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', hasAuth: true, maxAge: 1800000, expireAt:9480003084582  } ) )
+        .then( () => sessionStore.put( { sessionId: 'AneQmiU3HGhww9qHRz/91/bo/X5Bnvp5XR6dWe5yOpg=', talkId: 'Cc153a8d971a6fbd1e2357d92cdc7348e', hasAuth: true, maxAge: 1800000, expireAt:9480003084582, updateCount: 0  } ) )
         .then( () => done() );
       });
     });
@@ -67,11 +67,11 @@ describe('api', () => {
       expect( statusCode  ).to.equal( 200 );
 
       const body = JSON.parse( response.body );
-      expect( body.length ).to.equal( 4 );
-      expect( body[0] ).to.deep.equal( { createdAt: 1480000170151, type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663423153' } );
-      expect( body[1] ).to.deep.equal( { createdAt: 1480000169725, type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663390733' } );
-      expect( body[2] ).to.deep.equal( { createdAt: 1480000169331, type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663356302' } );
-      expect( body[3] ).to.deep.equal( { createdAt: 1480000169062, type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663336326' } );
+      expect( body.items.length ).to.equal( 4 );
+      expect( body.items[0] ).to.deep.equal( { createdAt: 1480000170151, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663423153', previewUrl: 'https://dev-bucket-for-album-bot/5253663423153', previewWidth: 1, previewHeight: 1 } );
+      expect( body.items[1] ).to.deep.equal( { createdAt: 1480000169725, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663390733', previewUrl: 'https://dev-bucket-for-album-bot/5253663390733', previewWidth: 1, previewHeight: 1 } );
+      expect( body.items[2] ).to.deep.equal( { createdAt: 1480000169331, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663356302', previewUrl: 'https://dev-bucket-for-album-bot/5253663356302', previewWidth: 1, previewHeight: 1 } );
+      expect( body.items[3] ).to.deep.equal( { createdAt: 1480000169062, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663336326', previewUrl: 'https://dev-bucket-for-album-bot/5253663336326', previewWidth: 1, previewHeight: 1 } );
 
       done();
     });
@@ -92,9 +92,9 @@ describe('api', () => {
       expect( statusCode  ).to.equal( 200 );
 
       const body = JSON.parse( response.body );
-      expect( body.length ).to.equal( 2 );
-      expect( body[0] ).to.deep.equal( { createdAt: 1480000170151, type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663423153' } );
-      expect( body[1] ).to.deep.equal( { createdAt: 1480000169725, type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663390733' } );
+      expect( body.items.length ).to.equal( 2 );
+      expect( body.items[0] ).to.deep.equal( { createdAt: 1480000170151, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663423153', previewUrl: 'https://dev-bucket-for-album-bot/5253663423153', previewWidth: 1, previewHeight: 1  } );
+      expect( body.items[1] ).to.deep.equal( { createdAt: 1480000169725, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663390733', previewUrl: 'https://dev-bucket-for-album-bot/5253663390733', previewWidth: 1, previewHeight: 1  } );
 
       done();
     });
@@ -116,9 +116,9 @@ describe('api', () => {
       expect( statusCode  ).to.equal( 200 );
 
       const body = JSON.parse( response.body );
-      expect( body.length ).to.equal( 2 );
-      expect( body[0] ).to.deep.equal( { createdAt: 1480000170151, type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663423153' } );
-      expect( body[1] ).to.deep.equal( { createdAt: 1480000169725, type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663390733' } );
+      expect( body.items.length ).to.equal( 2 );
+      expect( body.items[0] ).to.deep.equal( { createdAt: 1480000170151, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663423153', previewUrl: 'https://dev-bucket-for-album-bot/5253663423153', previewHeight: 1, previewWidth: 1  } );
+      expect( body.items[1] ).to.deep.equal( { createdAt: 1480000169725, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663390733', previewUrl: 'https://dev-bucket-for-album-bot/5253663390733', previewHeight: 1, previewWidth: 1  } );
 
       done();
     });
@@ -141,10 +141,31 @@ describe('api', () => {
       expect( statusCode  ).to.equal( 200 );
 
       const body = JSON.parse( response.body );
-      expect( body.length ).to.equal( 2 );
-      expect( body[0] ).to.deep.equal( { createdAt: 1480000169331, type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663356302' } );
-      expect( body[1] ).to.deep.equal( { createdAt: 1480000169062, type: 'image', objectUrl: 'https://dev-bucket-for-album-bot/5253663336326' } );
+      expect( body.items.length ).to.equal( 2 );
+      expect( body.items[0] ).to.deep.equal( { createdAt: 1480000169331, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663356302', previewUrl: 'https://dev-bucket-for-album-bot/5253663356302', previewWidth: 1, previewHeight: 1 } );
+      expect( body.items[1] ).to.deep.equal( { createdAt: 1480000169062, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663336326', previewUrl: 'https://dev-bucket-for-album-bot/5253663336326', previewWidth: 1, previewHeight: 1 } );
 
+      done();
+    });
+  });
+
+  it('get next image by lastEvaluatedCreatedAt', (done) => {
+    const talkId = 'Cc153a8d971a6fbd1e2357d92cdc7348e';
+    const sessionId = 'AneQmiU3HGhww9qHRz/91/bo/X5Bnvp5XR6dWe5yOpg=';
+    const httpMethod = 'GET';
+    const pathParameters = { proxy: `v1/albums/${talkId}/limit/1/lastEvaluatedCreatedAt/1480000170151` };
+    const body = { };
+    const headers = { Cookie: `sessionId=${sessionId}` };
+
+    wrapped.run({ body, headers, httpMethod, pathParameters }, (err, response) => {
+      expect(err).to.be.null;
+
+      const statusCode = response.statusCode;
+      expect( statusCode  ).to.equal( 200 );
+
+      const body = JSON.parse( response.body );
+      expect( body.items.length ).to.equal( 1 );
+      expect( body.items[0] ).to.deep.equal( { createdAt: 1480000169725, type: 'image', originalUrl: 'https://dev-bucket-for-album-bot/5253663390733', previewUrl: 'https://dev-bucket-for-album-bot/5253663390733', previewWidth: 1, previewHeight: 1 } );
       done();
     });
   });
@@ -164,7 +185,7 @@ describe('api', () => {
       expect( statusCode  ).to.equal( 200 );
 
       const body = JSON.parse( response.body );
-      expect( body.length ).to.equal( 0 );
+      expect( body.items.length ).to.equal( 0 );
 
       done();
     });

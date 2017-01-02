@@ -2,23 +2,30 @@ const db = require('./dynamodb').db;
 
 const TABLE_NAME = 'itemStore';
 
-function getByRange({ sourceId, limit, beginCreatedAt, endCreatedAt }) {
+function getByRange({ sourceId, limit, beginCreatedAt, endCreatedAt, lastEvaluatedCreatedAt }) {
   if (limit === 0) {
     return { Items: [], Count: 0 };
   }
 
   let KeyConditionExpression = '#sourceId = :sourceId';
-  let ExpressionAttributeValues = { ':sourceId': sourceId };
-  let ExpressionAttributeNames = { '#sourceId': 'sourceId' };
+
+  const ExpressionAttributeValues = { ':sourceId': sourceId };
+  const ExpressionAttributeNames = { '#sourceId': 'sourceId' };
   if (!!beginCreatedAt && !!endCreatedAt) {
     KeyConditionExpression += ' AND #createdAt BETWEEN :beginCreatedAt AND :endCreatedAt';
-    ExpressionAttributeValues = Object.assign(ExpressionAttributeValues, { ':beginCreatedAt': beginCreatedAt, ':endCreatedAt': endCreatedAt });
-    ExpressionAttributeNames = Object.assign(ExpressionAttributeNames, { '#createdAt': 'createdAt' });
+    Object.assign(ExpressionAttributeValues, { ':beginCreatedAt': beginCreatedAt, ':endCreatedAt': endCreatedAt });
+    Object.assign(ExpressionAttributeNames, { '#createdAt': 'createdAt' });
   } else if (beginCreatedAt) {
     KeyConditionExpression += ' AND #createdAt >= :beginCreatedAt';
-    ExpressionAttributeValues = Object.assign(ExpressionAttributeValues, { ':beginCreatedAt': beginCreatedAt });
-    ExpressionAttributeNames = Object.assign(ExpressionAttributeNames, { '#createdAt': 'createdAt' });
+    Object.assign(ExpressionAttributeValues, { ':beginCreatedAt': beginCreatedAt });
+    Object.assign(ExpressionAttributeNames, { '#createdAt': 'createdAt' });
   }
+
+  let ExclusiveStartKey;
+  if (!!lastEvaluatedCreatedAt) {
+    ExclusiveStartKey = { sourceId, createdAt: lastEvaluatedCreatedAt };
+  }
+
   const ScanIndexForward = false;
   const Limit = limit || 65536;
 
@@ -28,6 +35,7 @@ function getByRange({ sourceId, limit, beginCreatedAt, endCreatedAt }) {
     ExpressionAttributeValues,
     ExpressionAttributeNames,
     Limit,
+    ExclusiveStartKey,
     ScanIndexForward,
   });
 }

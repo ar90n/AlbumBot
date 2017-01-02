@@ -12,7 +12,8 @@ function create(talkId, autoLogin) {
   const expireAt = Date.now() + maxAge;
   const sessionId = passGenerator.generateToken();
   const hasAuth = true;
-  const session = { sessionId, talkId, maxAge, expireAt, hasAuth };
+  const updateCount = 0;
+  const session = { sessionId, talkId, maxAge, expireAt, hasAuth, updateCount };
 
   return sessionStore.put(session).then(() => Promise.resolve(session));
 }
