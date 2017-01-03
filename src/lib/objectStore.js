@@ -1,10 +1,10 @@
 const s3 = require('./s3').s3;
 const s3GetObjectUrl = require('./s3').getObjectUrl;
 
-const BUCKET_NAME = 'bucket-for-album-bot';
+const BUCKET_NAME = 'storage.album-bot.ar90n.net';
 
 function getObjectUrl(Key) {
-  return s3GetObjectUrl({ Bucket: BUCKET_NAME, Key });
+  return s3GetObjectUrl( Key );
 }
 
 function put(params) {

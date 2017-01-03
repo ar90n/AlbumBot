@@ -27,12 +27,10 @@ function createPreview(key, eTag) {
   .then(({ data, ContentType }) => {
     const Body = new Buffer(data, 'binary');
     const previewKey = `photo/preview/${sourceId}/${id}`;
-    const ACL = 'public-read';
     const ContentEncoding = 'binary';
     const content = {
       Key: previewKey,
       Body,
-      ACL,
       ContentType,
       ContentEncoding,
     };

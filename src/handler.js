@@ -8,9 +8,12 @@ const logger = require('./lib/logger');
 const api = require('./api/index');
 const strings = require('locutus/php/strings');
 
+const REMOTE_STAGE = process.env.REMOTE_STAGE
+const ALLOW_ORIGIN = (REMOTE_STAGE === 'prod') ? 'https://album-bot.ar90n.net' : `https://${REMOTE_STAGE}.album-bot.ar90n.net`;
+//const ALLOW_ORIGIN = 'http://localhost:3000';
+
 const corsHeaders = {
-  //'Access-Control-Allow-Origin': 'http://localhost:3000',
-  'Access-Control-Allow-Origin': `https://${process.env.REMOTE_STAGE}.album-bot.ar90n.net`,
+  'Access-Control-Allow-Origin': ALLOW_ORIGIN,
   'Access-Control-Allow-Credentials': true,
 };
 

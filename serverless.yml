@@ -61,17 +61,16 @@ resources:
     WWWBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.stage}album-bot.ar90n.net
-#    BlobBucket:
-#      Type: AWS::S3::Bucket
+        BucketName: ${self:custom.stage}.album-bot.ar90n.net
+#    BlobBucket: #      Type: AWS::S3::Bucket
 #      Properties:
 #        AccessControl: PublicRead
-#        BucketName: ${self:custom.stage}bucket-for-album-bot
+#        BucketName: ${self:custom.stage}.storage.album-bot.ar90n.net
 
 provider:
   name: aws
   runtime: nodejs4.3
-  region: us-east-1
+  region: ap-northeast-1
   stage: dev
   iamRoleStatements:
     - Effect: "Allow"
@@ -81,7 +80,7 @@ provider:
         - "s3:PutObject"
         - "s3:PutObjectAcl"
       Resource:
-        - "arn:aws:dynamodb:us-east-1:*"
+        - "arn:aws:dynamodb:ap-northeast-1:*"
         - "arn:aws:s3::*"
 
 plugins:
@@ -103,17 +102,17 @@ custom:
   s3:
     port: 8001
     buckets:
-      - bucket-for-album-bot
+      - ${self:custom.stage}.storage.album-bot.ar90n.net
     directory: /tmp
   writeEnvVars:
     REMOTE_STAGE: ${self:custom.stage}
-    CHANNEL_ID: ${file(./.env.yml):CHANNEL_ID}
-    CHANNEL_SECRET: ${file(./.env.yml):CHANNEL_SECRET}
-    CHANNEL_ACCESS_TOKEN: ${file(./.env.yml):CHANNEL_ACCESS_TOKEN}
+    CHANNEL_ID: ${file(./.env.yml):${self:custom.stage}_CHANNEL_ID}
+    CHANNEL_SECRET: ${file(./.env.yml):${self:custom.stage}_CHANNEL_SECRET}
+    CHANNEL_ACCESS_TOKEN: ${file(./.env.yml):${self:custom.stage}_CHANNEL_ACCESS_TOKEN}
   webpackIncludeModules: true
   s3Assets:
     client/dist:
-      bucket: ${self:custom.stage}album-bot.ar90n.net
+      bucket: ${self:custom.stage}.album-bot.ar90n.net
       cacheTime: 300
       contentType: text/html
       templates:
@@ -139,7 +138,7 @@ functions:
     handler: src/handler.s3hookResize
     events:
       - s3:
-          bucket: ${self:custom.stage}bucket-for-album-bot
+          bucket: ${self:custom.stage}.storage.album-bot.ar90n.net
           event: s3:ObjectCreated:*
           rules:
             - prefix: photo/original/
@@ -147,7 +146,7 @@ functions:
     handler: src/handler.s3hookCreateImageItem
     events:
       - s3:
-          bucket: ${self:custom.stage}bucket-for-album-bot
+          bucket: ${self:custom.stage}.storage.album-bot.ar90n.net
           event: s3:ObjectCreated:*
           rules:
             - prefix: photo/preview/
@@ -155,7 +154,7 @@ functions:
     handler: src/handler.s3hookCreateVideoItem
     events:
       - s3:
-          bucket: ${self:custom.stage}bucket-for-album-bot
+          bucket: ${self:custom.stage}.storage.album-bot.ar90n.net
           event: s3:ObjectCreated:*
           rules:
             - prefix: video/

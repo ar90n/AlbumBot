@@ -11,10 +11,9 @@ function fetchImage(bot, talkId, message) {
   .then((data) => {
     const Body = data;
     const Key = `photo/original/${talkId}/${messageId}.jpg`;
-    const ACL = 'public-read';
     const ContentType = 'image/jpeg';
     const ContentEncoding = 'binary';
-    return objects.put({ Key, Body, ACL, ContentType, ContentEncoding });
+    return objects.put({ Key, Body, ContentType, ContentEncoding });
   });
 }
 
@@ -24,10 +23,9 @@ function fetchVideo(bot, talkId, message) {
   .then((data) => {
     const Body = data;
     const Key = `video/${talkId}/${messageId}.mp4`;
-    const ACL = 'public-read';
     const ContentType = 'video/mp4';
     const ContentEncoding = 'binary';
-    return objects.put({ Key, Body, ACL, ContentType, ContentEncoding });
+    return objects.put({ Key, Body, ContentType, ContentEncoding });
   });
 }
 
