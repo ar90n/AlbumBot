@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "start": "webpack-dev-server --history-api-fallback",
-    "build": "webpack"
+    "build-dev": "REMOTE_STAGE=dev webpack",
+    "build-prod": "REMOTE_STAGE=prod webpack"
   },
   "author": "Masahiro Wada<argon.argon.argon@gmail.com>",
   "license": "MIT",

@@ -24,7 +24,7 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([{ from: './index.html', to: '../dist/index.html' }]),
     new webpack.DefinePlugin({
-      'process.env.API_HOST': JSON.stringify(process.env.API_HOST || 'api.album-bot.ar90n.net'),
+      'process.env.API_HOST': JSON.stringify((process.env.REMOTE_STAGE === 'prod') ? 'api.album-bot.ar90n.net' : 'api.dev.album-bot.ar90n.net' ),
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
