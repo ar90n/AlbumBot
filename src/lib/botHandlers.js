@@ -168,7 +168,7 @@ function onPostback(callback, token, message) {
 
     const talk = response.Items[0];
     if (talk.updateToken !== postbackData.updateToken) {
-      const rejectMessage = '無効な操作です';
+      const rejectMessage = '合言葉を変更できませんでした';
       return this.replyTextMessage(token, rejectMessage).then(() => {
         throw new Error(`Invalid updateToken to update passHash: ${postbackData.updateToken}`);
       });
