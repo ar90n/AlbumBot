@@ -33,9 +33,7 @@ export class App extends React.Component<{children: any, appState: AppState, rou
     if( this.props.appState.isLoggedTalkId !== null ) {
         const talkId: string = this.props.appState.isLoggedTalkId;
         API.logout( talkId ).then( response => {
-            if ( response.ok ) {
-                this.props.router.push(`/login/${talkId}`);
-            }
+            this.props.router.push(`/login/${talkId}`);
         });
     }
   }
