@@ -90,6 +90,7 @@ plugins:
   - serverless-mocha-plugin
   - serverless-webpack
   - serverless-s3-assets
+  - serverless-plugin-export-endpoints
 
 custom:
   stage: ${opt:stage, self:provider.stage}

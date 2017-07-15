@@ -1,0 +1,14 @@
+{
+ "webhook": {
+  "POST": "https://3b9wx83rz6.execute-api.ap-northeast-1.amazonaws.com/dev/webhook"
+ },
+ "api": {
+  "DELETE": "https://3b9wx83rz6.execute-api.ap-northeast-1.amazonaws.com/dev/api/{{proxy+}}",
+  "GET": "https://3b9wx83rz6.execute-api.ap-northeast-1.amazonaws.com/dev/api/{{proxy+}}",
+  "HEAD": "https://3b9wx83rz6.execute-api.ap-northeast-1.amazonaws.com/dev/api/{{proxy+}}",
+  "OPTIONS": "https://3b9wx83rz6.execute-api.ap-northeast-1.amazonaws.com/dev/api/{{proxy+}}",
+  "PATCH": "https://3b9wx83rz6.execute-api.ap-northeast-1.amazonaws.com/dev/api/{{proxy+}}",
+  "POST": "https://3b9wx83rz6.execute-api.ap-northeast-1.amazonaws.com/dev/api/{{proxy+}}",
+  "PUT": "https://3b9wx83rz6.execute-api.ap-northeast-1.amazonaws.com/dev/api/{{proxy+}}"
+ }
+}
