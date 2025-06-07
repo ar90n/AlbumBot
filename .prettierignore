@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+.git/
+*.log
+*.lock
+package-lock.json
+.DS_Store
+.env*
+wrangler.toml

@@ -1,0 +1,36 @@
+# Configuration for labeler action
+
+documentation:
+  - '**/*.md'
+  - 'docs/**/*'
+
+tests:
+  - 'tests/**/*'
+  - '**/*.test.ts'
+  - '**/*.spec.ts'
+
+source:
+  - 'src/**/*'
+
+ci:
+  - '.github/**/*'
+  - '.github/workflows/**/*'
+
+dependencies:
+  - 'package.json'
+  - 'package-lock.json'
+  - 'tsconfig.json'
+
+cloudflare:
+  - 'wrangler.toml'
+  - 'src/index.ts'
+  - 'src/types/env.ts'
+
+line-api:
+  - 'src/services/line.ts'
+  - 'src/types/line.ts'
+  - 'src/handlers/webhook.ts'
+
+storage:
+  - 'src/services/storage.ts'
+  - 'src/handlers/media.ts'

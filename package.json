@@ -1,49 +1,31 @@
 {
-  "name": "album_bot",
-  "version": "0.0.1",
-  "description": "",
+  "name": "line-album-bot",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "mocha-webpack --webpack-config webpack.config-test.js",
-    "test-all": "mocha-webpack --webpack-config webpack.config-test.js test"
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest",
+    "test:watch": "vitest watch",
+    "test:ui": "vitest --ui",
+    "coverage": "vitest run --coverage",
+    "lint": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "typecheck": "tsc --noEmit"
   },
-  "author": "Masahiro Wada<argon.argon.argon@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "aws-sdk": "^2.6.1",
-    "bluebird": "^3.4.6",
-    "cookie": "^0.3.1",
-    "image-size": "^0.5.0",
-    "imagemagick": "^0.1.3",
-    "line-messaging": "^1.1.8",
-    "locutus": "^2.0.5"
-  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
   "devDependencies": {
-    "babel": "^6.5.2",
-    "babel-core": "^6.18.2",
-    "babel-loader": "^6.2.7",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-preset-es2015-loose": "^8.0.0",
-    "babel-preset-react": "^6.16.0",
-    "chai": "^3.5.0",
-    "dotenv-webpack": "^1.3.1",
-    "mocha": "^3.1.2",
-    "mocha-webpack": "^0.7.0",
-    "nock": "^9.0.2",
-    "serverless": "^1.1.0",
-    "serverless-client-s3": "git+https://github.com/ar90n/serverless-client-s3.git#serverless_1.0.3_compatibility",
-    "serverless-dynamodb-local": "0.2.17",
-    "serverless-mocha-plugin": "^1.0.3",
-    "serverless-plugin-write-env-vars": "1.0.1",
-    "serverless-s3-local": "^0.1.0",
-    "serverless-webpack": "^1.0.0-rc.2",
-    "webpack": "^1.13.3",
-    "webpack-node-externals": "^1.5.4"
-  },
-  "eslintConfig": {
-    "extends": "airbnb",
-    "plugins": [
-      "import"
-    ]
+    "@cloudflare/workers-types": "^4.20250607.0",
+    "@line/bot-sdk": "^10.0.0",
+    "@vitest/coverage-v8": "^3.2.2",
+    "@vitest/ui": "^3.2.2",
+    "c8": "^10.1.3",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.2",
+    "wrangler": "^4.19.1"
   }
 }
