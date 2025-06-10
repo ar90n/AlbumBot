@@ -1,7 +1,27 @@
-export const hexToBuffer = (hex: string): ArrayBuffer => {
-  const matches = hex.match(/.{1,2}/g) || [];
-  const bytes = matches.map(byte => parseInt(byte, 16));
-  return new Uint8Array(bytes).buffer;
+/**
+ * Note: We implement our own signature validation for Cloudflare Workers compatibility.
+ * The @line/bot-sdk's validateSignature uses Node.js crypto module which is not available
+ * in Cloudflare Workers. This implementation uses Web Crypto API instead.
+ * 
+ * LINE sends signatures in base64 format, so we handle base64 encoding/decoding here.
+ */
+
+export const base64ToBuffer = (base64: string): ArrayBuffer => {
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+};
+
+export const bufferToBase64 = (buffer: ArrayBuffer): string => {
+  const bytes = new Uint8Array(buffer);
+  let binary = '';
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
 };
 
 export const verifySignature = async (
@@ -19,7 +39,8 @@ export const verifySignature = async (
       ['verify']
     );
 
-    const signatureBuffer = hexToBuffer(signature);
+    // LINE sends signatures in base64 format
+    const signatureBuffer = base64ToBuffer(signature);
     const dataBuffer = encoder.encode(body);
 
     return crypto.subtle.verify('HMAC', key, signatureBuffer, dataBuffer);
@@ -41,7 +62,6 @@ export const generateTestSignature = async (body: string, secret: string): Promi
   const dataBuffer = encoder.encode(body);
   const signatureBuffer = await crypto.subtle.sign('HMAC', key, dataBuffer);
 
-  return Array.from(new Uint8Array(signatureBuffer))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+  // Return base64 signature to match LINE's format
+  return bufferToBase64(signatureBuffer);
 };

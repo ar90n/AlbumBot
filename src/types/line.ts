@@ -1,3 +1,11 @@
+/**
+ * LINE Webhook Types
+ * 
+ * These types are compatible with @line/bot-sdk but defined here for
+ * Cloudflare Workers compatibility. The structure matches LINE's official
+ * webhook event types.
+ */
+
 export interface LineWebhookBody {
   destination: string;
   events: LineEvent[];
