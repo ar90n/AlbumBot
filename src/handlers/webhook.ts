@@ -27,6 +27,7 @@ export async function handleWebhook(
   const signature = request.headers.get('X-Line-Signature') || '';
 
   if (!signature) {
+    console.log("signature is missing");
     return new Response('Unauthorized', { status: 401 });
   }
 
@@ -38,6 +39,7 @@ export async function handleWebhook(
   }
 
   if (!(await verifySignature(body, signature, env.LINE_CHANNEL_SECRET))) {
+    console.log(`auth failed ${env.LINE_CHANNEL_SECRET.slice(0, 3)}`);
     return new Response('Unauthorized', { status: 401 });
   }
 
