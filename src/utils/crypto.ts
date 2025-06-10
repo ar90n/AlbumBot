@@ -2,7 +2,7 @@
  * Note: We implement our own signature validation for Cloudflare Workers compatibility.
  * The @line/bot-sdk's validateSignature uses Node.js crypto module which is not available
  * in Cloudflare Workers. This implementation uses Web Crypto API instead.
- * 
+ *
  * LINE sends signatures in base64 format, so we handle base64 encoding/decoding here.
  */
 

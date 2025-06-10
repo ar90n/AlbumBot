@@ -1,6 +1,5 @@
 import type { Env } from '../types/env';
 import type { LineWebhookBody, LineEvent, MediaEvent } from '../types/line';
-import type { LineClient } from '../services/line';
 import { verifySignature } from '../utils/crypto';
 import { isValidWebhookBody, isMediaEvent } from '../utils/validation';
 import { createLineClient } from '../services/line';
@@ -11,12 +10,8 @@ export const filterMediaEvents = (events: LineEvent[]): MediaEvent[] => {
   return events.filter((event): event is MediaEvent => isMediaEvent(event));
 };
 
-export const createMediaTasks = (
-  events: MediaEvent[],
-  storage: R2MediaStorage,
-  lineClient: LineClient
-): Promise<any>[] => {
-  return events.map(event => processMediaEvent(event, storage, lineClient));
+export const createMediaTasks = (events: MediaEvent[], storage: R2MediaStorage): Promise<any>[] => {
+  return events.map(event => processMediaEvent(event, storage));
 };
 
 export async function handleWebhook(
@@ -27,7 +22,7 @@ export async function handleWebhook(
   const signature = request.headers.get('X-Line-Signature') || '';
 
   if (!signature) {
-    console.log("signature is missing");
+    console.log('signature is missing');
     return new Response('Unauthorized', { status: 401 });
   }
 
@@ -60,7 +55,7 @@ export async function handleWebhook(
   if (mediaEvents.length > 0) {
     const lineClient = createLineClient(env);
     const storage = new R2MediaStorage(env.MEDIA_BUCKET, lineClient);
-    const tasks = createMediaTasks(mediaEvents, storage, lineClient);
+    const tasks = createMediaTasks(mediaEvents, storage);
 
     ctx.waitUntil(Promise.all(tasks));
   }

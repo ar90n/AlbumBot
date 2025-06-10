@@ -23,9 +23,6 @@ describe('Webhook Integration Tests', () => {
           })
         );
       }
-      if (url.includes('api.line.me')) {
-        return Promise.resolve(new Response('{}', { status: 200 }));
-      }
       return Promise.reject(new Error('Unknown URL'));
     });
   });
@@ -72,17 +69,6 @@ describe('Webhook Integration Tests', () => {
     expect(env.MEDIA_BUCKET.put).toHaveBeenCalledWith(
       expect.stringMatching(/^image\/msg123_.*\.jpg$/),
       expect.any(ReadableStream)
-    );
-
-    // Verify LINE reply was sent
-    expect(global.fetch).toHaveBeenCalledWith(
-      'https://api.line.me/v2/bot/message/reply',
-      expect.objectContaining({
-        method: 'POST',
-        headers: expect.objectContaining({
-          Authorization: 'Bearer test-token'
-        })
-      })
     );
   });
 

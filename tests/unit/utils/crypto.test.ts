@@ -78,7 +78,7 @@ describe('crypto utilities', () => {
 
       // Signature should be in base64 format
       expect(signature).toMatch(/^[A-Za-z0-9+/]*={0,2}$/);
-      
+
       const result = await verifySignature(body, signature, secret);
       expect(result).toBe(true);
     });

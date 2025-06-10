@@ -49,42 +49,6 @@ describe('LineClient', () => {
     });
   });
 
-  describe('replyMessage', () => {
-    it('should send reply with correct payload', async () => {
-      const replyToken = 'reply123';
-      const messages = [{ type: 'text', text: 'Hello' }];
-      const mockResponse = new Response('{}', { status: 200 });
-
-      const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValueOnce(mockResponse);
-
-      await lineClient.replyMessage(replyToken, messages);
-
-      expect(fetchSpy).toHaveBeenCalledWith('https://api.line.me/v2/bot/message/reply', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${mockEnv.LINE_CHANNEL_ACCESS_TOKEN}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          replyToken,
-          messages
-        })
-      });
-    });
-
-    it('should throw error for failed reply', async () => {
-      const replyToken = 'reply123';
-      const messages = [{ type: 'text', text: 'Hello' }];
-      const mockResponse = new Response('error', { status: 400 });
-
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce(mockResponse);
-
-      await expect(lineClient.replyMessage(replyToken, messages)).rejects.toThrow(
-        'Failed to reply message: 400'
-      );
-    });
-  });
-
   describe('createLineClient', () => {
     it('should create a new LineClient instance', async () => {
       const { createLineClient } = await import('../../../src/services/line');
