@@ -5,3 +5,6 @@ compatibility_date = "2024-12-01"
 [[r2_buckets]]
 binding = "MEDIA_BUCKET"
 bucket_name = "line-media-storage"
+
+[observability.logs]
+enabled = true
